@@ -15,75 +15,99 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* VOICE: calmo, privato, sicuro: una piccola cassaforte in tasca
+/* VOICE: calmo, privato, sicuro: una piccola cassaforte in tasca, facile anche per chi non è pratico
    IDEA: una cassaforte: porta pesante fuori, schedario ordinato dentro
    PICTURE: la manopola a combinazione sulla schermata di blocco; dentro, l'elenco stesso
    COLOUR and TYPE: campo petrolio profondo, schede chiare, accento corallo; Plex Sans + Plex Mono per i segreti
    LAYOUT: una colonna fino a 720px, barra fissa in alto, pannelli che salgono dal basso */
-:root{color-scheme:light dark;--bg:light-dark(#eef2f1,#0b1c20);--card:light-dark(#ffffff,#13292e);--ink:light-dark(#10262b,#e6efed);--mute:light-dark(#566a6e,#97abae);--line:light-dark(#d5dfdd,#25434b);--field:light-dark(#f6f9f8,#0e2226);--deep:#12343b;--deep2:#0c262c;--acc:#ff6b4a;--bad:light-dark(#b8261f,#ff8a80)}
+:root{color-scheme:light dark;--fs:16px;--bg:light-dark(#eef2f1,#0b1c20);--card:light-dark(#ffffff,#13292e);--ink:light-dark(#10262b,#e6efed);--mute:light-dark(#566a6e,#97abae);--line:light-dark(#d5dfdd,#25434b);--field:light-dark(#f6f9f8,#0e2226);--deep:#12343b;--deep2:#0c262c;--acc:#e8553a;--warn:light-dark(#8a5a00,#ffcf70);--warnbg:light-dark(#fff3d6,#3a2c0c);--bad:light-dark(#b8261f,#ff8a80)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+:root.big{--fs:19px}
 *{box-sizing:border-box;min-width:0}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip}
-button,input,textarea{font:inherit;color:inherit}
-button{min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:500}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.5 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip;-webkit-tap-highlight-color:transparent}
+button,input,textarea,select{font:inherit;color:inherit}
+button{min-height:46px;padding:0 14px;border-radius:11px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:500}
 button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
 button.ghost{background:transparent}
 button.danger{color:var(--bad);border-color:currentColor;background:transparent}
+button:disabled{opacity:.6}
 button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-input,textarea{width:100%;min-height:46px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--field);font-size:16px}
-textarea{min-height:80px;resize:vertical}
-label{display:block;font-size:14px;color:var(--mute);margin:14px 0 6px;font-weight:500}
+input,textarea{width:100%;min-height:48px;padding:10px 12px;border-radius:11px;border:1px solid var(--line);background:var(--field);font-size:max(16px,1rem)}
+textarea{min-height:84px;resize:vertical}
+label{display:block;font-size:.88rem;color:var(--mute);margin:14px 0 6px;font-weight:500}
 .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
 .hide{display:none!important}
 /* blocco */
-#lock{min-height:100svh;padding-top:max(32px,env(safe-area-inset-top))!important;background:radial-gradient(120% 70% at 50% 0%,#1b4a53,var(--deep) 55%,var(--deep2));color:#eaf3f1;display:grid;place-items:center;padding:32px 20px}
-.door{width:min(400px,100%);text-align:center}
-.dial{width:min(210px,56vw);aspect-ratio:1;display:block;margin:0 auto 22px;filter:drop-shadow(0 18px 24px rgba(0,0,0,.35))}
+#lock{min-height:100svh;background:radial-gradient(120% 70% at 50% 0%,#1b4a53,var(--deep) 55%,var(--deep2));color:#eaf3f1;display:grid;place-items:center;padding:max(32px,env(safe-area-inset-top)) 20px max(32px,env(safe-area-inset-bottom))}
+.door{width:min(420px,100%);text-align:center}
+.dial{width:min(200px,52vw);aspect-ratio:1;display:block;margin:0 auto 22px;filter:drop-shadow(0 18px 24px rgba(0,0,0,.35))}
 .dial .turn{transform-origin:100px 100px;transition:transform .9s cubic-bezier(.3,1.4,.5,1)}
-h1{font-size:34px;line-height:1.05;margin:0 0 6px;text-wrap:balance}
-.door p{color:#b9cfcc;margin:0 0 20px}
-.door input{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);color:#fff;text-align:center;font-size:18px}
-.door input::placeholder{color:#9fb7b3}
+h1{font-size:2rem;line-height:1.05;margin:0 0 8px;text-wrap:balance}
+.door p{color:#c3d6d3;margin:0 0 20px}
 .door form{display:grid;gap:10px}
-.door button.pri{min-height:50px;font-size:17px}
-.door .msg{min-height:24px;margin-top:12px;color:#ffc2b5;font-size:15px}
-.door .note{font-size:14px;color:#a9c1bd;margin-top:16px}
+.pwbox{position:relative}
+.pwbox input{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.25);color:#fff;text-align:center;font-size:1.1rem;padding-inline:64px}
+.pwbox input::placeholder{color:#a5bcb8}
+.pwbox button{position:absolute;right:4px;top:4px;min-height:40px;padding:0 10px;background:transparent;border:0;color:#cfe3df;font-size:.85rem}
+.door button.pri{min-height:52px;font-size:1.05rem}
+.door .msg{min-height:24px;margin-top:12px;color:#ffc2b5;font-size:.95rem}
+.door .note{font-size:.88rem;color:#b1c8c4;margin-top:14px}
+.install{margin-top:18px;text-align:start;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:14px 16px;font-size:.92rem;color:#e3eeec}
+.install b{color:#fff}
+.install ol{margin:8px 0 0;padding-left:20px}.install li{margin:4px 0}
 /* principale */
 header{position:sticky;top:0;z-index:5;background:var(--deep);color:#fff;padding:calc(10px + env(safe-area-inset-top)) max(4vw,14px) 10px;display:flex;gap:8px;align-items:center}
-header b{font-size:19px;flex:1}
-header button{background:transparent;color:#fff;border-color:rgba(255,255,255,.3)}
+header b{font-size:1.15rem;flex:1}
+header button{background:transparent;color:#fff;border-color:rgba(255,255,255,.3);padding:0 12px}
 header button.pri{background:var(--acc);border-color:var(--acc)}
-main{max-width:720px;margin:0 auto;padding:16px max(4vw,14px) 60px}
-.bar{display:flex;gap:10px;align-items:center;margin-bottom:6px}
-.bar input{flex:1}
-.meta{font-size:14px;color:var(--mute);margin:8px 2px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+main{max-width:720px;margin:0 auto;padding:16px max(4vw,14px) calc(70px + env(safe-area-inset-bottom))}
+.nudge{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--warnbg);color:var(--warn);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:.92rem;font-weight:500}
+.nudge button{min-height:40px;background:transparent;border-color:currentColor;color:inherit}
+.meta{font-size:.88rem;color:var(--mute);margin:10px 2px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{min-height:38px;border-radius:19px;padding:0 14px;font-size:.88rem}
+.chip[aria-pressed=true]{background:var(--deep);border-color:var(--deep);color:#fff}
 #list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 1px 0 var(--line)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px;box-shadow:0 1px 0 var(--line)}
 .top{display:flex;gap:12px;align-items:center}
-.ini{flex:none;width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:var(--deep);color:#fff;font-weight:700;font-size:18px}
+.ini{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--deep);color:#fff;font-weight:700;font-size:1.1rem}
 .who{flex:1;display:grid}
-.who b{font-size:17px;overflow-wrap:anywhere}
-.who span{color:var(--mute);font-size:15px;overflow-wrap:anywhere}
+.who b{font-size:1.06rem;overflow-wrap:anywhere}
+.who span{color:var(--mute);font-size:.94rem;overflow-wrap:anywhere}
+.star{min-height:44px;width:44px;padding:0;border:0;background:transparent;font-size:1.4rem;line-height:1;color:var(--mute)}
+.star[aria-pressed=true]{color:#e8a700}
+.flags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.flag{font-size:.8rem;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--warnbg);color:var(--warn)}
 .pw{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
-.pw code{flex:1 1 100%;background:var(--field);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:16px;overflow-wrap:anywhere;letter-spacing:.02em}
+.pw code{flex:1 1 100%;background:var(--field);border:1px dashed var(--line);border-radius:11px;padding:10px 12px;font-size:1rem;overflow-wrap:anywhere;letter-spacing:.02em}
 .pw button{flex:1 1 auto}
-.card a{display:inline-block;margin-top:10px;font-size:15px;color:var(--ink);overflow-wrap:anywhere}
-.card .nt{margin:10px 0 0;font-size:15px;color:var(--mute);white-space:pre-wrap;overflow-wrap:anywhere}
-.empty{text-align:center;color:var(--mute);padding:40px 10px;border:2px dashed var(--line);border-radius:14px}
+.card a{display:inline-block;margin-top:10px;font-size:.94rem;color:var(--ink);overflow-wrap:anywhere}
+.card .nt{margin:10px 0 0;font-size:.94rem;color:var(--mute);white-space:pre-wrap;overflow-wrap:anywhere}
+.empty{text-align:center;color:var(--mute);padding:40px 16px;border:2px dashed var(--line);border-radius:15px;list-style:none}
 /* pannelli */
 .veil{position:fixed;inset:0;z-index:20;background:rgba(5,15,18,.55);display:flex;align-items:flex-end;justify-content:center}
-.sheet{background:var(--bg);width:min(620px,100%);max-height:92svh;overflow:auto;border-radius:18px 18px 0 0;padding:18px max(4vw,16px) 24px}
-.sheet h2{font-size:22px;margin:0 0 4px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sheet{background:var(--bg);width:min(620px,100%);max-height:92svh;overflow:auto;border-radius:18px 18px 0 0;padding:18px max(4vw,16px) calc(24px + env(safe-area-inset-bottom))}
+.sheet h2{font-size:1.35rem;margin:0 0 4px;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .row{display:flex;gap:8px}.row input{flex:1}
+.gen{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:.9rem;color:var(--mute)}
+.gen input[type=range]{flex:1;min-height:auto;padding:0;accent-color:var(--acc)}
+.gen label{margin:0;display:flex;gap:6px;align-items:center}
+.gen input[type=checkbox]{width:22px;height:22px;min-height:auto;accent-color:var(--acc)}
+.strength{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:.85rem;color:var(--mute)}
+.strength div{flex:1;height:6px;border-radius:3px;background:var(--line);overflow:hidden}.strength i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
 .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.acts .pri{flex:1}
 .sec{border-top:1px solid var(--line);margin-top:22px;padding-top:6px}
-.sec h3{font-size:17px;margin:12px 0 4px}
-.sec p{margin:4px 0;color:var(--mute);font-size:15px}
-.strength{height:6px;border-radius:3px;background:var(--line);margin-top:8px;overflow:hidden}.strength i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
-.err{color:var(--bad);font-size:15px;min-height:22px;margin-top:8px}
-#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:40;background:#0c262c;color:#fff;padding:12px 18px;border-radius:12px;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:calc(100% - 32px)}
+.sec h3{font-size:1.05rem;margin:12px 0 4px}
+.sec p{margin:4px 0;color:var(--mute);font-size:.94rem}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;font-size:1rem;color:var(--ink)}
+.switch input{width:26px;height:26px;min-height:auto;accent-color:var(--acc)}
+.err{color:var(--bad);font-size:.94rem;min-height:22px;margin-top:8px}
+#toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;background:#0c262c;color:#fff;padding:10px 12px 10px 18px;border-radius:12px;font-size:.94rem;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:calc(100% - 32px);display:flex;gap:12px;align-items:center}
+#toast button{min-height:38px;background:transparent;color:#ffb3a3;border-color:#ffb3a3}
 @media(prefers-reduced-motion:reduce){.dial .turn,.strength i{transition:none}}
 @media(min-width:900px){.veil{align-items:center}.sheet{border-radius:18px}}
+@media(max-width:420px){header button:not(.pri){padding:0 9px;font-size:.88rem}}
 </style>
 </head>
 <body>
@@ -95,7 +119,7 @@ main{max-width:720px;margin:0 auto;padding:16px max(4vw,14px) 60px}
       <circle cx="100" cy="100" r="88" fill="#1d4a52" stroke="#2c6570" stroke-width="2"/>
       <g class="turn" id="turn">
         <circle cx="100" cy="100" r="76" fill="none" stroke="#cfe3df" stroke-width="10" stroke-dasharray="1.6 6.36" opacity=".75"/>
-        <circle cx="100" cy="100" r="76" fill="none" stroke="#fff" stroke-width="14" stroke-dasharray="2.4 37.4" />
+        <circle cx="100" cy="100" r="76" fill="none" stroke="#fff" stroke-width="14" stroke-dasharray="2.4 37.4"/>
         <circle cx="100" cy="100" r="58" fill="#e9f1ef"/>
         <circle cx="100" cy="100" r="58" fill="url(#sh)"/>
         <rect x="93" y="48" width="14" height="104" rx="7" fill="#c9d8d5"/>
@@ -104,29 +128,30 @@ main{max-width:720px;margin:0 auto;padding:16px max(4vw,14px) 60px}
       <path d="M100 2 l9 14 h-18z" fill="#ff6b4a"/>
       <defs><radialGradient id="sh" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#7c9894" stop-opacity=".45"/></radialGradient></defs>
     </svg>
-    <h1 id="lockTitle">Le mie password</h1>
-    <p id="lockSub">Caricamento della cassaforte…</p>
+    <h1>Le mie password</h1>
+    <p id="lockSub">Caricamento…</p>
     <form id="lockForm" class="hide" autocomplete="off">
-      <input id="pw1" type="password" placeholder="Password principale" autocomplete="current-password" aria-label="Password principale">
-      <input id="pw2" class="hide" type="password" placeholder="Ripeti la password principale" autocomplete="new-password" aria-label="Ripeti la password principale">
+      <div class="pwbox"><input id="pw1" type="password" placeholder="Password principale" aria-label="Password principale"><button type="button" data-eye="pw1">Mostra</button></div>
+      <div class="pwbox hide" id="pw2box"><input id="pw2" type="password" placeholder="Ripetila per sicurezza" aria-label="Ripeti la password principale" autocomplete="new-password"><button type="button" data-eye="pw2">Mostra</button></div>
       <button class="pri" id="lockBtn" type="submit">Apri</button>
     </form>
-    <button id="retry" class="hide pri" type="button">Riprova</button>
     <div class="msg" id="lockMsg" role="status"></div>
     <div class="note" id="lockNote"></div>
+    <div class="install hide" id="install"></div>
   </div>
 </section>
 
 <div id="app" class="hide">
   <header>
-    <b>Le mie password</b>
+    <b>Password</b>
     <button class="pri" id="addBtn" type="button">+ Nuova</button>
-    <button id="setBtn" type="button" aria-label="Impostazioni">Impostazioni</button>
-    <button id="lockNow" type="button">Blocca</button>
+    <button id="setBtn" type="button">Impostazioni</button>
+    <button id="lockNow" type="button">Chiudi</button>
   </header>
   <main>
-    <div class="bar"><input id="q" type="search" placeholder="Cerca per nome, utente o sito" aria-label="Cerca"></div>
-    <div class="meta"><span id="count"></span><span id="sync"></span></div>
+    <div class="nudge hide" id="nudge"><span id="nudgeTxt"></span><button type="button" id="nudgeBtn">Fai il backup</button></div>
+    <input id="q" type="search" placeholder="Cerca per nome, utente o sito" aria-label="Cerca">
+    <div class="meta"><div class="chips" id="chips"><button class="chip" type="button" data-f="all" aria-pressed="true">Tutte</button><button class="chip" type="button" data-f="fav" aria-pressed="false">★ Preferite</button><button class="chip" type="button" data-f="weak" aria-pressed="false">Da migliorare</button></div><span id="count"></span></div>
     <ul id="list"></ul>
   </main>
 </div>
@@ -134,13 +159,14 @@ main{max-width:720px;margin:0 auto;padding:16px max(4vw,14px) 60px}
 <div class="veil hide" id="editVeil">
   <form class="sheet" id="editForm" autocomplete="off">
     <h2><span id="editTitle">Nuova password</span><button type="button" class="ghost" data-close>Chiudi</button></h2>
-    <label for="fTitle">Nome (es. Banca, Gmail, Amazon)</label>
-    <input id="fTitle" required maxlength="120">
+    <label for="fTitle">Nome (es. Banca, Posta, Amazon)</label>
+    <input id="fTitle" maxlength="120">
     <label for="fUser">Utente o email</label>
     <input id="fUser" maxlength="200" autocapitalize="off" spellcheck="false">
     <label for="fPw">Password</label>
-    <div class="row"><input id="fPw" class="mono" maxlength="500" autocapitalize="off" spellcheck="false"><button type="button" id="genBtn">Genera</button></div>
-    <div class="strength"><i id="str"></i></div>
+    <div class="row"><input id="fPw" class="mono" maxlength="500" autocapitalize="off" spellcheck="false"><button type="button" id="genBtn">Crea</button></div>
+    <div class="gen"><span>Lunghezza <b id="lenOut">16</b></span><input type="range" id="len" min="10" max="32" value="16" aria-label="Lunghezza"><label><input type="checkbox" id="sym" checked> Simboli</label></div>
+    <div class="strength"><div><i id="str"></i></div><span id="strTxt"></span></div>
     <label for="fUrl">Sito (facoltativo)</label>
     <input id="fUrl" maxlength="300" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="www.esempio.it">
     <label for="fNotes">Note (facoltative)</label>
@@ -153,7 +179,20 @@ main{max-width:720px;margin:0 auto;padding:16px max(4vw,14px) 60px}
 <div class="veil hide" id="setVeil">
   <div class="sheet">
     <h2>Impostazioni<button type="button" class="ghost" data-close>Chiudi</button></h2>
-    <p class="sec" style="border:0;margin:0;padding:0;color:var(--mute)" id="setInfo"></p>
+    <div class="sec" style="border:0;margin:0">
+      <h3>Lettura</h3>
+      <label class="switch">Testo più grande<input type="checkbox" id="bigTxt"></label>
+    </div>
+    <div class="sec">
+      <h3>Backup</h3>
+      <p id="bkInfo"></p>
+      <p>Il backup è un file cifrato: si apre solo con la password principale. Mandalo a te stesso su WhatsApp o salvalo su Drive: se cambi telefono, lo usi per recuperare tutto.</p>
+      <div class="acts"><button type="button" class="pri" id="expBtn">Salva o invia backup</button></div>
+      <label for="impFile">Recupera da un file di backup</label>
+      <input id="impFile" type="file" accept=".json,application/json,text/plain">
+      <div class="err" id="impErr"></div>
+      <div class="acts hide" id="impActs"><button type="button" class="danger" id="impGo">Sostituisci tutto con questo backup</button></div>
+    </div>
     <form class="sec" id="chgForm" autocomplete="off">
       <h3>Cambia password principale</h3>
       <label for="cOld">Password attuale</label><input id="cOld" type="password">
@@ -162,112 +201,143 @@ main{max-width:720px;margin:0 auto;padding:16px max(4vw,14px) 60px}
       <div class="err" id="chgErr"></div>
       <div class="acts"><button class="pri" type="submit">Cambia password</button></div>
     </form>
-    <div class="sec">
-      <h3>Backup</h3>
-      <p>Il backup è cifrato: si apre solo con la password principale di quel momento. Salvalo ogni tanto su Drive, nella mail o mandalo a te stesso su WhatsApp.</p>
-      <div class="acts"><button type="button" class="pri" id="expBtn">Salva o invia backup</button><button type="button" id="copyBk">Copia backup</button></div>
-      <label for="impFile">Ripristina da un file di backup</label>
-      <input id="impFile" type="file" accept=".json,application/json,text/plain">
-      <div class="err" id="impErr"></div>
-      <div class="acts hide" id="impActs"><button type="button" class="danger" id="impGo">Sostituisci tutto con questo backup</button></div>
-    </div>
-    <div class="sec"><h3>Blocco automatico</h3><p>La cassaforte si chiude dopo 5 minuti senza attività o se lasci la pagina per più di 2 minuti.</p></div>
+    <div class="sec"><h3>Sicurezza</h3><p>Le password sono cifrate su questo telefono (AES-256) e non vengono inviate a nessuno. L'app si chiude da sola dopo 5 minuti di inattività o se la lasci per più di 2 minuti. Una password copiata viene tolta dagli appunti dopo 45 secondi, quando il telefono lo permette.</p></div>
   </div>
 </div>
 
-<div id="toast" class="hide" role="status"></div>
+<div id="toast" class="hide" role="status"><span id="toastTxt"></span><button type="button" id="toastBtn" class="hide">Annulla</button></div>
 
 <script>
 {
 const $=s=>document.querySelector(s);
 const te=new TextEncoder(),td=new TextDecoder();
-const ITER=600000,LS='pv_vault_v1',IDLE=5*60e3,AWAY=2*60e3;
-let stored=null,key=null,salt=null,iter=ITER,items=[],mode='',editId=null,delArm=false,impBlob=null,idleT=null,hiddenAt=0,saving=Promise.resolve(),toastT=null,syncTxt='';
+const ITER=600000,LS='pv_vault_v1',PREF='pv_prefs_v1',IDLE=5*60e3,AWAY=2*60e3,BK_DAYS=30;
+let stored=null,key=null,salt=null,iter=ITER,items=[],mode='',filter='all',editId=null,delArm=false,impBlob=null,idleT=null,hiddenAt=0,saving=Promise.resolve(),toastT=null,undoFn=null,fails=0,waitUntil=0,clipT=null,prefs={};
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function b64(buf){const a=new Uint8Array(buf);let s='';for(let i=0;i<a.length;i+=8192)s+=String.fromCharCode.apply(null,a.subarray(i,i+8192));return btoa(s)}
 const ub64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
-const later=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r(undefined),ms))]);
 const valid=b=>!!b&&typeof b==='object'&&typeof b.salt==='string'&&typeof b.iv==='string'&&typeof b.ct==='string';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isMobile=isIOS||/android/i.test(navigator.userAgent);
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+
+function loadPrefs(){try{prefs=JSON.parse(localStorage.getItem(PREF)||'{}')||{}}catch(e){prefs={}}document.documentElement.classList.toggle('big',!!prefs.big)}
+function savePrefs(){try{localStorage.setItem(PREF,JSON.stringify(prefs))}catch(e){}}
 
 async function derive(pw,s,it){const base=await crypto.subtle.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:s,iterations:it,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
 async function seal(){const iv=crypto.getRandomValues(new Uint8Array(12));const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,te.encode(JSON.stringify({items})));return{v:1,kdf:'PBKDF2-SHA256',iter,salt:b64(salt),iv:b64(iv),ct:b64(ct),updated:Date.now()}}
 async function openBlob(b,pw){const it=b.iter||ITER,s=ub64(b.salt);const k=await derive(pw,s,it);const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:ub64(b.iv)},k,ub64(b.ct));return{k,s,it,data:JSON.parse(td.decode(pt))}}
 function readLocal(){try{const s=localStorage.getItem(LS);return s?JSON.parse(s):null}catch(e){return null}}
 function writeLocal(b){try{localStorage.setItem(LS,JSON.stringify(b));return true}catch(e){return false}}
+function persist(){saving=saving.then(async()=>{const b=await seal();stored=b;if(!writeLocal(b))toast('Salvataggio non riuscito: memoria del telefono piena?')}).catch(()=>toast('Salvataggio non riuscito'));return saving}
 
-function toast(t){const el=$('#toast');el.textContent=t;el.classList.remove('hide');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.add('hide'),2600)}
-function setSync(t){syncTxt=t;$('#sync').textContent=t;$('#setInfo').textContent=t}
+function toast(t,undo){$('#toastTxt').textContent=t;undoFn=undo||null;$('#toastBtn').classList.toggle('hide',!undo);$('#toast').classList.remove('hide');clearTimeout(toastT);toastT=setTimeout(()=>{$('#toast').classList.add('hide');undoFn=null},undo?7000:2600)}
+$('#toastBtn').addEventListener('click',()=>{const f=undoFn;undoFn=null;$('#toast').classList.add('hide');if(f)f()});
 
-function persist(){saving=saving.then(async()=>{const b=await seal();stored=b;if(!writeLocal(b))toast('Salvataggio non riuscito')}).catch(()=>toast('Salvataggio non riuscito'));return saving}
+function installHelp(){
+  const el=$('#install');if(standalone||!isMobile){el.classList.add('hide');return}
+  el.innerHTML=isIOS
+    ?'<b>Prima mettila sulla schermata Home</b><ol><li>Tocca il tasto <b>Condividi</b> di Safari (il quadrato con la freccia in su)</li><li>Scegli <b>Aggiungi alla schermata Home</b> e poi <b>Aggiungi</b></li><li>Chiudi Safari e apri l\'app <b>dall\'icona</b>: crea la password lì</li></ol>'
+    :'<b>Mettila sulla schermata Home</b><ol><li>Tocca i <b>tre puntini</b> in alto a destra di Chrome</li><li>Scegli <b>Installa app</b> oppure <b>Aggiungi a schermata Home</b></li><li>Poi apri l\'app dall\'icona</li></ol>';
+  el.classList.remove('hide');
+}
 
 function lockView(m,sub,note){
   mode=m;$('#app').classList.add('hide');$('#lock').classList.remove('hide');
   $('#lockSub').textContent=sub;$('#lockNote').textContent=note||'';$('#lockMsg').textContent='';
-  $('#lockForm').classList.toggle('hide',m!=='unlock'&&m!=='setup');$('#retry').classList.toggle('hide',m!=='error');
-  $('#pw2').classList.toggle('hide',m!=='setup');$('#pw1').placeholder=m==='setup'?'Scegli la password principale':'Password principale';
+  $('#lockForm').classList.remove('hide');$('#pw2box').classList.toggle('hide',m!=='setup');
+  $('#pw1').placeholder=m==='setup'?'Scegli la password principale':'Password principale';
   $('#pw1').autocomplete=m==='setup'?'new-password':'current-password';
   $('#lockBtn').textContent=m==='setup'?'Crea la cassaforte':'Apri';
-  $('#pw1').value='';$('#pw2').value='';
-  if(m==='unlock'||m==='setup')setTimeout(()=>$('#pw1').focus(),50);
+  $('#pw1').value='';$('#pw2').value='';$('#pw1').type='password';$('#pw2').type='password';
+  document.querySelectorAll('[data-eye]').forEach(b=>b.textContent='Mostra');
+  installHelp();
+  if(standalone||!isMobile||m==='unlock')setTimeout(()=>$('#pw1').focus(),60);
 }
+document.querySelectorAll('[data-eye]').forEach(b=>b.addEventListener('click',()=>{const i=$('#'+b.dataset.eye);const on=i.type==='password';i.type=on?'text':'password';b.textContent=on?'Nascondi':'Mostra'}));
 
-async function boot(){
+function boot(){
+  loadPrefs();
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
   stored=readLocal();if(!valid(stored))stored=null;
-  setSync('Cifrate e salvate solo su questo telefono');
   if(stored)lockView('unlock','Inserisci la password principale.');
-  else lockView('setup','Scegli la password principale. Non si può recuperare: se la dimentichi, le password salvate sono perse.','Le password restano cifrate su questo telefono e non vengono inviate a nessuno.');
+  else lockView('setup','Scegli una password principale che ricordi bene. Non si può recuperare: se la dimentichi, le password salvate sono perse.',isIOS&&!standalone?'Su iPhone crea la password solo dopo aver aperto l\'app dall\'icona sulla Home.':'');
 }
 
-function spin(){const t=$('#turn');t.style.transform='rotate('+(Math.random()*300+200|0)+'deg)'}
+function spin(){$('#turn').style.transform='rotate('+(Math.random()*300+200|0)+'deg)'}
 
 $('#lockForm').addEventListener('submit',async e=>{
-  e.preventDefault();const p1=$('#pw1').value,btn=$('#lockBtn');
+  e.preventDefault();const p1=$('#pw1').value,btn=$('#lockBtn'),msg=$('#lockMsg');
   if(mode==='setup'){
-    if(p1.length<8)return $('#lockMsg').textContent='Usa almeno 8 caratteri.';
-    if(p1!==$('#pw2').value)return $('#lockMsg').textContent='Le due password non coincidono.';
+    if(p1.length<8)return msg.textContent='Usa almeno 8 caratteri.';
+    if(p1!==$('#pw2').value)return msg.textContent='Le due password non coincidono.';
     btn.disabled=true;spin();
     salt=crypto.getRandomValues(new Uint8Array(16));iter=ITER;key=await derive(p1,salt,iter);items=[];
     await persist();btn.disabled=false;return showMain();
   }
-  if(!p1)return;btn.disabled=true;btn.textContent='Apertura…';spin();
-  try{const r=await openBlob(stored,p1);key=r.k;salt=r.s;iter=r.it;items=Array.isArray(r.data.items)?r.data.items:[];showMain()}
-  catch(err){$('#lockMsg').textContent='Password sbagliata.';$('#pw1').select()}
+  if(!p1)return;
+  const w=waitUntil-Date.now();if(w>0)return msg.textContent='Troppi tentativi: riprova tra '+Math.ceil(w/1000)+' secondi.';
+  btn.disabled=true;btn.textContent='Apertura…';spin();
+  try{const r=await openBlob(stored,p1);key=r.k;salt=r.s;iter=r.it;items=Array.isArray(r.data.items)?r.data.items:[];fails=0;showMain()}
+  catch(err){fails++;if(fails>=3)waitUntil=Date.now()+Math.min(60,5*2**(fails-3))*1000;msg.textContent='Password sbagliata.'+(fails>=3?' Attendi qualche secondo prima di riprovare.':'');$('#pw1').select()}
   btn.disabled=false;btn.textContent=mode==='setup'?'Crea la cassaforte':'Apri';
 });
-$('#retry').addEventListener('click',boot);
 
-function showMain(){mode='open';$('#lock').classList.add('hide');$('#app').classList.remove('hide');$('#q').value='';render();bump();setSync(syncTxt)}
-function lock(){key=null;items=[];impBlob=null;$('#list').innerHTML='';closeSheets();clearTimeout(idleT);lockView('unlock','Cassaforte chiusa. Inserisci la password principale.',syncTxt);$('#turn').style.transform=''}
+function showMain(){mode='open';$('#lock').classList.add('hide');$('#app').classList.remove('hide');$('#q').value='';render();nudge();bump()}
+function lock(){key=null;items=[];impBlob=null;$('#list').innerHTML='';closeSheets();clearTimeout(idleT);lockView('unlock','App chiusa. Inserisci la password principale.');$('#turn').style.transform=''}
 $('#lockNow').addEventListener('click',lock);
 function bump(){if(mode!=='open')return;clearTimeout(idleT);idleT=setTimeout(lock,IDLE)}
 ['pointerdown','keydown','scroll'].forEach(ev=>addEventListener(ev,bump,{passive:true}));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)hiddenAt=Date.now();else if(mode==='open'&&hiddenAt&&Date.now()-hiddenAt>AWAY)lock()});
 
+function score(p){p=p||'';let s=0;if(p.length>=8)s++;if(p.length>=12)s++;if(p.length>=16)s++;if(/[a-z]/.test(p)&&/[A-Z]/.test(p))s++;if(/\d/.test(p))s++;if(/[^A-Za-z0-9]/.test(p))s++;if(/^(.)\1+$/.test(p)||/^(123|password|qwerty|abc)/i.test(p))s=Math.min(s,1);return s}
+const isWeak=p=>!!p&&score(p)<=2;
+function counts(){const m={};items.forEach(i=>{if(i.pw)m[i.pw]=(m[i.pw]||0)+1});return m}
+
 function href(u){u=String(u||'').trim();if(!u)return '';return /^https?:\/\//i.test(u)?u:'https://'+u}
-function card(i){
+function card(i,dup){
   const site=i.url?`<a href="${esc(href(i.url))}" target="_blank" rel="noopener noreferrer">${esc(i.url)}</a>`:'';
   const notes=i.notes?`<p class="nt">${esc(i.notes)}</p>`:'';
-  return `<li class="card" data-id="${esc(i.id)}"><div class="top"><span class="ini">${esc((i.title||'?').trim().charAt(0).toUpperCase()||'?')}</span><div class="who"><b>${esc(i.title)}</b><span>${esc(i.user||'Nessun utente')}</span></div><button class="ghost" data-a="edit">Modifica</button></div>
-  <div class="pw"><code class="mono" data-pw>••••••••••••</code><button data-a="show">Mostra</button>${i.user?'<button data-a="cu">Copia utente</button>':''}<button class="pri" data-a="cp">Copia password</button></div>${site}${notes}</li>`;
+  const flags=[isWeak(i.pw)?'<span class="flag">Password debole</span>':'',dup?'<span class="flag">Usata anche altrove</span>':''].join('');
+  return `<li class="card" data-id="${esc(i.id)}"><div class="top"><span class="ini">${esc((i.title||'?').trim().charAt(0).toUpperCase()||'?')}</span><div class="who"><b>${esc(i.title)}</b><span>${esc(i.user||'Nessun utente')}</span></div><button class="star" data-a="fav" aria-label="Preferita" aria-pressed="${!!i.fav}">${i.fav?'★':'☆'}</button></div>
+  ${flags?`<div class="flags">${flags}</div>`:''}
+  <div class="pw"><code class="mono" data-pw>••••••••••••</code><button data-a="show">Mostra</button>${i.user?'<button data-a="cu">Copia utente</button>':''}<button class="pri" data-a="cp">Copia password</button><button class="ghost" data-a="edit">Modifica</button></div>${site}${notes}</li>`;
 }
 function render(){
-  const q=$('#q').value.trim().toLowerCase();
-  const list=items.filter(i=>!q||[i.title,i.user,i.url,i.notes].join(' ').toLowerCase().includes(q)).sort((a,b)=>String(a.title).localeCompare(String(b.title),'it',{sensitivity:'base'}));
-  $('#count').textContent=items.length===1?'1 password salvata':items.length+' password salvate';
-  $('#list').innerHTML=list.length?list.map(card).join(''):`<li class="empty">${items.length?'Nessun risultato per questa ricerca.':'Ancora nessuna password. Tocca <b>+ Nuova</b> per aggiungere la prima.'}</li>`;
+  const q=$('#q').value.trim().toLowerCase(),c=counts();
+  const list=items.filter(i=>(!q||[i.title,i.user,i.url,i.notes].join(' ').toLowerCase().includes(q))&&(filter==='all'||(filter==='fav'&&i.fav)||(filter==='weak'&&(isWeak(i.pw)||c[i.pw]>1))))
+    .sort((a,b)=>(b.fav?1:0)-(a.fav?1:0)||(b.used||0)-(a.used||0)||String(a.title).localeCompare(String(b.title),'it',{sensitivity:'base'}));
+  $('#count').textContent=items.length===1?'1 salvata':items.length+' salvate';
+  const empty=!items.length?'Ancora nessuna password.<br>Tocca <b>+ Nuova</b> per aggiungere la prima.':q?'Nessun risultato per questa ricerca.':filter==='fav'?'Nessuna preferita: tocca la stellina ☆ su una password.':'Tutto in ordine: nessuna password debole o ripetuta.';
+  $('#list').innerHTML=list.length?list.map(i=>card(i,c[i.pw]>1)).join(''):`<li class="empty">${empty}</li>`;
 }
 $('#q').addEventListener('input',render);
+$('#chips').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;filter=b.dataset.f;document.querySelectorAll('[data-f]').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
 
-async function copy(t,what){try{await navigator.clipboard.writeText(t);toast(what+' copiata')}catch(e){toast('Copia non riuscita: usa Mostra e copia a mano')}}
+function nudge(){
+  const last=prefs.lastBackup||0,days=(Date.now()-last)/864e5;
+  const show=items.length>0&&days>BK_DAYS;
+  $('#nudge').classList.toggle('hide',!show);
+  $('#nudgeTxt').textContent=last?'Ultimo backup '+Math.floor(days)+' giorni fa.':'Non hai ancora fatto un backup.';
+  $('#bkInfo').textContent=last?'Ultimo backup: '+new Date(last).toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'})+'.':'Non hai ancora fatto un backup.';
+}
+$('#nudgeBtn').addEventListener('click',doBackup);
+
+async function copy(t,what,secret){
+  try{await navigator.clipboard.writeText(t);toast(what+' copiata');
+    if(secret){clearTimeout(clipT);clipT=setTimeout(()=>{if(document.hasFocus())navigator.clipboard.writeText('').catch(()=>{})},45000)}}
+  catch(e){toast('Copia non riuscita: tocca Mostra e copia a mano')}
+}
+function touch(it){it.used=Date.now();persist()}
 $('#list').addEventListener('click',e=>{
   const b=e.target.closest('button[data-a]');if(!b)return;const li=b.closest('.card');const it=items.find(x=>x.id===li.dataset.id);if(!it)return;
   const a=b.dataset.a;
   if(a==='edit')openEdit(it);
-  else if(a==='cp')copy(it.pw||'','Password');
-  else if(a==='cu')copy(it.user||'','Utente');
+  else if(a==='fav'){it.fav=!it.fav;render();persist()}
+  else if(a==='cp'){copy(it.pw||'','Password',true);touch(it)}
+  else if(a==='cu'){copy(it.user||'','Utente');touch(it)}
   else if(a==='show'){const c=li.querySelector('[data-pw]');const on=b.textContent==='Mostra';c.textContent=on?(it.pw||'(vuota)'):'••••••••••••';b.textContent=on?'Nascondi':'Mostra'}
 });
 
@@ -276,45 +346,59 @@ document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',
 document.querySelectorAll('.veil').forEach(v=>v.addEventListener('click',e=>{if(e.target===v)closeSheets()}));
 addEventListener('keydown',e=>{if(e.key==='Escape')closeSheets()});
 
-function strength(p){let s=0;if(p.length>=8)s++;if(p.length>=12)s++;if(p.length>=16)s++;if(/[a-z]/.test(p)&&/[A-Z]/.test(p))s++;if(/\d/.test(p))s++;if(/[^A-Za-z0-9]/.test(p))s++;$('#str').style.width=Math.min(100,s/6*100)+'%'}
-function gen(n){const cs='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*?-_+=';const lim=Math.floor(2**32/cs.length)*cs.length,r=new Uint32Array(1);let o='';while(o.length<n){crypto.getRandomValues(r);if(r[0]<lim)o+=cs[r[0]%cs.length]}return o}
-$('#genBtn').addEventListener('click',()=>{const p=gen(20);$('#fPw').value=p;strength(p)});
-$('#fPw').addEventListener('input',e=>strength(e.target.value));
+function strength(p){const s=score(p);$('#str').style.width=(p?Math.max(8,s/6*100):0)+'%';$('#strTxt').textContent=!p?'':s<=2?'Debole':s<=4?'Discreta':'Forte'}
+function gen(n,sym){const cs='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'+(sym?'!@#$%&*?-_+=':'');const lim=Math.floor(2**32/cs.length)*cs.length,r=new Uint32Array(1);
+  for(;;){let o='';while(o.length<n){crypto.getRandomValues(r);if(r[0]<lim)o+=cs[r[0]%cs.length]}if(/[a-z]/.test(o)&&/[A-Z]/.test(o)&&/\d/.test(o)&&(!sym||/[^A-Za-z0-9]/.test(o)))return o}}
+function makePw(){const p=gen(+$('#len').value,$('#sym').checked);$('#fPw').value=p;strength(p)}
+$('#genBtn').addEventListener('click',makePw);
+$('#len').addEventListener('input',e=>{$('#lenOut').textContent=e.target.value});
+$('#len').addEventListener('change',()=>{if($('#fPw').dataset.gen)makePw()});
+$('#sym').addEventListener('change',()=>{if($('#fPw').dataset.gen)makePw()});
+$('#genBtn').addEventListener('click',()=>$('#fPw').dataset.gen='1');
+$('#fPw').addEventListener('input',e=>{delete e.target.dataset.gen;strength(e.target.value)});
 
 function openEdit(it){
   editId=it?it.id:null;delArm=false;$('#delBtn').textContent='Elimina';$('#delBtn').classList.toggle('hide',!it);
   $('#editTitle').textContent=it?'Modifica':'Nuova password';$('#editErr').textContent='';
   $('#fTitle').value=it?.title||'';$('#fUser').value=it?.user||'';$('#fPw').value=it?.pw||'';$('#fUrl').value=it?.url||'';$('#fNotes').value=it?.notes||'';
-  strength($('#fPw').value);$('#editVeil').classList.remove('hide');setTimeout(()=>$('#fTitle').focus(),50);
+  delete $('#fPw').dataset.gen;strength($('#fPw').value);$('#editVeil').classList.remove('hide');
+  if(!isMobile)setTimeout(()=>$('#fTitle').focus(),60);
 }
 $('#addBtn').addEventListener('click',()=>openEdit(null));
 $('#editForm').addEventListener('submit',async e=>{
-  e.preventDefault();const title=$('#fTitle').value.trim();if(!title)return $('#editErr').textContent='Dai un nome a questa voce.';
-  const d={title,user:$('#fUser').value.trim(),pw:$('#fPw').value,url:$('#fUrl').value.trim(),notes:$('#fNotes').value.trim(),changed:Date.now()};
-  if(editId){const i=items.findIndex(x=>x.id===editId);if(i>-1)items[i]={...items[i],...d}}else items.push({id:uid(),...d});
-  closeSheets();render();await persist();toast('Salvata');
+  e.preventDefault();const title=$('#fTitle').value.trim();if(!title)return $('#editErr').textContent='Scrivi un nome per questa voce (es. Banca).';
+  const pw=$('#fPw').value;if(!pw)return $('#editErr').textContent='Scrivi la password, oppure tocca Crea.';
+  const d={title,user:$('#fUser').value.trim(),pw,url:$('#fUrl').value.trim(),notes:$('#fNotes').value.trim(),changed:Date.now()};
+  if(editId){const i=items.findIndex(x=>x.id===editId);if(i>-1)items[i]={...items[i],...d}}else items.push({id:uid(),fav:false,...d});
+  closeSheets();render();nudge();await persist();toast('Salvata');
 });
 $('#delBtn').addEventListener('click',async()=>{
   if(!delArm){delArm=true;$('#delBtn').textContent='Tocca di nuovo per eliminare';return}
-  items=items.filter(x=>x.id!==editId);closeSheets();render();await persist();toast('Eliminata');
+  const idx=items.findIndex(x=>x.id===editId);if(idx<0)return;const gone=items[idx];
+  items.splice(idx,1);closeSheets();render();await persist();
+  toast('Eliminata',()=>{items.splice(Math.min(idx,items.length),0,gone);render();persist();toast('Ripristinata')});
 });
 
-$('#setBtn').addEventListener('click',()=>{['#cOld','#cNew','#cNew2'].forEach(s=>$(s).value='');$('#chgErr').textContent='';$('#impErr').textContent='';$('#impActs').classList.add('hide');$('#impFile').value='';impBlob=null;$('#setVeil').classList.remove('hide')});
+$('#setBtn').addEventListener('click',()=>{['#cOld','#cNew','#cNew2'].forEach(s=>$(s).value='');$('#chgErr').textContent='';$('#impErr').textContent='';$('#impActs').classList.add('hide');$('#impFile').value='';impBlob=null;$('#bigTxt').checked=!!prefs.big;nudge();$('#setVeil').classList.remove('hide')});
+$('#bigTxt').addEventListener('change',e=>{prefs.big=e.target.checked;savePrefs();document.documentElement.classList.toggle('big',prefs.big)});
 $('#chgForm').addEventListener('submit',async e=>{
   e.preventDefault();const o=$('#cOld').value,n=$('#cNew').value,err=$('#chgErr');
   if(n.length<8)return err.textContent='La nuova password deve avere almeno 8 caratteri.';
   if(n!==$('#cNew2').value)return err.textContent='Le nuove password non coincidono.';
   await saving;try{await openBlob(stored,o)}catch(x){return err.textContent='La password attuale non è corretta.'}
-  salt=crypto.getRandomValues(new Uint8Array(16));iter=ITER;key=await derive(n,salt,iter);await persist();closeSheets();toast('Password principale cambiata');
+  salt=crypto.getRandomValues(new Uint8Array(16));iter=ITER;key=await derive(n,salt,iter);await persist();closeSheets();
+  toast('Password principale cambiata. Fai un nuovo backup.');prefs.lastBackup=0;savePrefs();nudge();
 });
 
 function bkName(){const d=new Date();return 'password-backup-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'.json'}
-$('#expBtn').addEventListener('click',async()=>{
+async function doBackup(){
   await saving;const data=JSON.stringify(stored);const file=new File([data],bkName(),{type:'application/json'});
-  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Backup password'});toast('Backup pronto');return}}catch(e){if(e&&e.name==='AbortError')return}
-  const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=bkName();document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast('Backup scaricato');
-});
-$('#copyBk').addEventListener('click',async()=>{await saving;copy(JSON.stringify(stored),'Copia di backup')});
+  const done=()=>{prefs.lastBackup=Date.now();savePrefs();nudge()};
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Backup password'});done();toast('Backup pronto');return}}
+  catch(e){if(e&&e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=bkName();document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);done();toast('Backup scaricato');
+}
+$('#expBtn').addEventListener('click',doBackup);
 $('#impFile').addEventListener('change',async e=>{
   const f=e.target.files[0];impBlob=null;$('#impActs').classList.add('hide');$('#impErr').textContent='';if(!f)return;
   try{const b=JSON.parse(await f.text());if(!valid(b))throw 0;impBlob=b;$('#impErr').textContent='Backup letto. Sostituirà tutte le password attuali; poi lo apri con la password principale di quel backup.';$('#impActs').classList.remove('hide')}
