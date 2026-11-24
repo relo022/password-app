@@ -223,7 +223,8 @@ const getLS=(k,d='')=>{try{return localStorage.getItem(k)??d}catch{return d}};
 const setLS=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
 let tt;const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2200)};
 const WATCH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="5" rx="1"/><rect x="7" y="17" width="10" height="5" rx="1"/><circle cx="12" cy="12" r="6"/><path d="M12 9v3l2 1.5" stroke-linecap="round"/></svg>';
-const wait=t=>`<div class="wait"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="20" fill="#1d3f8f"/><g class="hand"><rect x="21" y="7" width="2" height="16" rx="1" fill="#fff"/></g><circle cx="22" cy="22" r="2.5" fill="#fff"/></svg><div><b>${esc(t)}</b><div class="note">Di solito ci vogliono 10–20 secondi</div></div></div>`;
+const wait=t=>`<div class="wait"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="20" fill="#1d3f8f"/><g class="hand"><rect x="21" y="7" width="2" height="16" rx="1" fill="#fff"/></g><circle cx="22" cy="22" r="2.5" fill="#fff"/></svg><div><b>${esc(t)}</b><div class="note" id="waitNote">Di solito ci vogliono 10–30 secondi</div></div></div>`;
+const onTry=k=>{const n=document.getElementById('waitNote');if(n&&k>0)n.textContent='Il primo servizio è lento, provo il successivo… ('+(k+1)+' di '+MODELS.length+')'};
 
 /* orologio nella barra */
 const tick=()=>{const d=new Date(),m=d.getMinutes(),h=d.getHours()%12+m/60;$('#mm').setAttribute('transform',`rotate(${m*6} 20 20)`);$('#hh').setAttribute('transform',`rotate(${h*30} 20 20)`)};
@@ -262,17 +263,28 @@ $('#brands').addEventListener('click',e=>{const b=e.target.closest('[data-b]');i
 
 /* Gemini */
 const toB64=b=>new Promise((ok,ko)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=ko;r.readAsDataURL(b)});
-async function ask(prompt,images=[]){
+/* più modelli in fila: se uno è sovraccarico o lento si passa al successivo */
+const MODELS=[['gemini-3.5-flash',45000],['gemini-3-flash-preview',40000],['gemini-flash-lite-latest',40000],['gemini-3.5-flash-lite',60000]];
+async function ask(prompt,images=[],onTry){
   const key=getLS('banco-key');if(!key)throw{code:'no_config'};
   const parts=[{text:prompt}];for(const b of images)parts.push({inline_data:{mime_type:'image/jpeg',data:await toB64(b)}});
-  let r;try{r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},
-    body:JSON.stringify({contents:[{role:'user',parts}],generationConfig:{responseMimeType:'application/json',temperature:0.3}})})}catch{throw{code:'offline'}}
-  if(r.status===429)throw{code:'rate_limited'};if(r.status===400||r.status===401||r.status===403)throw{code:'bad_key'};
-  const j=await r.json().catch(()=>({}));if(!r.ok)throw{code:'server'};
-  const t=(j.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('');
-  try{return JSON.parse(t)}catch{throw{code:'server'}}}
+  const body=JSON.stringify({contents:[{role:'user',parts}],generationConfig:{responseMimeType:'application/json',temperature:0.3}});
+  let last='server',net=0;
+  for(const [k,[model,ms]] of MODELS.entries()){
+    onTry?.(k);const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),ms);
+    try{const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body,signal:ctl.signal});
+      clearTimeout(t);
+      if(r.status===401||r.status===403)throw{code:'bad_key'};
+      if(r.status===400){const j=await r.json().catch(()=>({}));if(/api key|API_KEY/i.test(j?.error?.message||''))throw{code:'bad_key'};last='server';continue}
+      if(r.status===429){last='rate_limited';continue}
+      if(!r.ok){last='busy';continue}
+      const j=await r.json().catch(()=>({}));const tx=(j.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('');
+      try{return JSON.parse(tx.replace(/^```(json)?|```$/g,'').trim())}catch{last='server';continue}
+    }catch(e){clearTimeout(t);if(typeof e?.code==='string')throw e;if(e?.name==='AbortError'){last='busy';continue}net++;last='offline';if(net>1)break}
+  }
+  throw{code:last}}
 const CTX='Contesto: il proprietario è un privato di Napoli che compra e rivende orologi usati, di solito nella fascia tra 200 e 10.000 euro (marche come Seiko, Tissot, Longines, Omega, Tudor, TAG Heuer, Hamilton, Oris, Breitling e simili; raramente alta orologeria).';
-const errMsg=e=>({no_config:'La stima non è ancora attiva: serve la chiave Gemini (I miei → Impostazioni valutazione).',bad_key:'La chiave Gemini non funziona: controllala in I miei → Impostazioni valutazione.',offline:'Non c\'è connessione a internet. Riprova quando sei connesso.',rate_limited:'Troppe richieste per oggi o in pochi minuti: riprova più tardi.'})[e?.code]||'Non sono riuscito a fare la stima. Riprova tra poco.';
+const errMsg=e=>({no_config:'La stima non è ancora attiva: serve la chiave Gemini (I miei → Impostazioni valutazione).',bad_key:'La chiave Gemini non funziona: controllala in I miei → Impostazioni valutazione.',offline:'Non c\'è connessione a internet. Riprova quando sei connesso.',rate_limited:'Troppe richieste per oggi o in pochi minuti: riprova più tardi.',busy:'Gemini in questo momento è sovraccarico. Riprova tra qualche minuto.'})[e?.code]||'Non sono riuscito a fare la stima. Riprova tra poco.';
 const trend=d=>{d=String(d||'').toLowerCase();return d.startsWith('sal')?'<span class="pill up">↗ In salita</span>':d.startsWith('scend')||d.startsWith('disc')?'<span class="pill down">↘ In discesa</span>':'<span class="pill">→ Stabile</span>'};
 const list=a=>Array.isArray(a)&&a.length?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
 
@@ -298,7 +310,7 @@ $('#fCerca').addEventListener('submit',async ev=>{ev.preventDefault();const s=q(
   try{const r=await ask(`Sei un commerciante esperto di orologi sul mercato italiano ed europeo (Chrono24, eBay venduti, Subito, Catawiki). ${CTX} Orologio: "${s}". Condizione: ${segVal('stato')}. Corredo: ${segVal('corredo')}. Per: ${segVal('genere')}. Fascia di prezzo che cerca: ${fmt(range().min)}–${fmt(range().max)}${range().a?'':' e oltre'} euro.
 Indica anche 3-5 modelli di questa marca${segVal('genere')!=='Qualsiasi'?' da '+segVal('genere').toLowerCase():''} che sul mercato dell'usato si trovano dentro la fascia di prezzo indicata, con il prezzo tipico (se la marca non ne ha, lista vuota).
 Dai una stima realistica in euro dei prezzi a cui si compra e si vende oggi questo orologio. Se il modello è ambiguo, scegli la variante più comune e dillo. Non inventare referenze: se non sei sicuro, dillo.
-Rispondi SOLO con JSON: {"modello":"nome completo riconosciuto","listino_nuovo":numero o null,"mercato_min":numero,"mercato_max":numero,"prezzo_acquisto_buono":numero (sotto questo è un affare),"tendenza":"salita|stabile|discesa","motivo_tendenza":"una frase","varianti":["referenze o varianti che cambiano il prezzo"],"controlli":["cosa controllare prima di comprare"],"note":"2-3 frasi sul mercato di questo modello","modelli_in_fascia":[{"nome":"modello","prezzo":numero}]}`);
+Rispondi SOLO con JSON: {"modello":"nome completo riconosciuto","listino_nuovo":numero o null,"mercato_min":numero,"mercato_max":numero,"prezzo_acquisto_buono":numero (sotto questo è un affare),"tendenza":"salita|stabile|discesa","motivo_tendenza":"una frase","varianti":["referenze o varianti che cambiano il prezzo"],"controlli":["cosa controllare prima di comprare"],"note":"2-3 frasi sul mercato di questo modello","modelli_in_fascia":[{"nome":"modello","prezzo":numero}]}`,[],onTry);
     $('#cOut').innerHTML=`<div class="tag"><p class="kick">Stima di mercato · usato, ${esc(segVal('corredo').toLowerCase())}</p><h3 class="name serif">${esc(r.modello||s)}</h3>
       <div class="big">${eur(N(r.mercato_min))} – ${eur(N(r.mercato_max))}</div>
       <div class="cols"><div class="on"><small>Affare se lo trovi sotto</small><b>${eur(N(r.prezzo_acquisto_buono))}</b></div><div><small>Listino nuovo</small><b>${eur(N(r.listino_nuovo))}</b></div><div><small>Andamento</small><b style="font:600 15px Inter,sans-serif">${trend(r.tendenza)}</b></div></div>
@@ -329,7 +341,7 @@ $('#vGo').addEventListener('click',async()=>{
   try{const r=await ask(`Sei un perito e commerciante esperto di orologi per il mercato italiano ed europeo dell'usato (Chrono24, eBay venduti, Subito, Catawiki). ${CTX} Guarda le foto allegate di un orologio.
 Corredo: ${$('#vCorredo').value}. ${pag?`Il proprietario l'ha pagato ${pag} euro.`:''} Note del proprietario: ${$('#vNote').value.trim()||'nessuna'}.
 1) Riconosci marca, modello e se possibile referenza; indica quanto sei sicuro. 2) Descrivi le condizioni visibili. 3) Stima il valore di mercato oggi in euro. 4) Proponi tre prezzi per metterlo in vendita: veloce (si vende in pochi giorni), giusto, ambizioso (per chi può aspettare). 5) Di' se il prezzo di questo modello tende a salire, restare stabile o scendere nei prossimi 1-2 anni e perché. 6) Consiglia se tenerlo o venderlo ora. Non dichiarare mai che è autentico: elenca i controlli da fare. Se le foto non bastano, dillo e chiedi quali foto servono.
-Rispondi SOLO con JSON: {"marca":"","modello":"","referenza":"o stringa vuota","sicurezza":"alta|media|bassa","condizioni":"1-2 frasi","valore_min":numero,"valore_max":numero,"prezzo_veloce":numero,"prezzo_giusto":numero,"prezzo_ambizioso":numero,"tendenza":"salita|stabile|discesa","motivo_tendenza":"1-2 frasi","consiglio":"tenere|vendere","motivo_consiglio":"1-2 frasi","dove_vendere":"dove conviene metterlo in vendita e perché, 1 frase","controlli":["controlli di autenticità e condizioni"],"foto_mancanti":["foto utili da aggiungere, se servono"]}`,photos.map(p=>p.blob));
+Rispondi SOLO con JSON: {"marca":"","modello":"","referenza":"o stringa vuota","sicurezza":"alta|media|bassa","condizioni":"1-2 frasi","valore_min":numero,"valore_max":numero,"prezzo_veloce":numero,"prezzo_giusto":numero,"prezzo_ambizioso":numero,"tendenza":"salita|stabile|discesa","motivo_tendenza":"1-2 frasi","consiglio":"tenere|vendere","motivo_consiglio":"1-2 frasi","dove_vendere":"dove conviene metterlo in vendita e perché, 1 frase","controlli":["controlli di autenticità e condizioni"],"foto_mancanti":["foto utili da aggiungere, se servono"]}`,photos.map(p=>p.blob),onTry);
     const nome=[r.marca,r.modello].filter(Boolean).join(' ')||'Orologio non riconosciuto';
     const giusto=N(r.prezzo_giusto),diff=pag&&giusto?giusto-pag:null,tieni=String(r.consiglio).startsWith('ten');
     $('#vOut').innerHTML=`<div class="tag"><p class="kick">Riconosciuto con sicurezza ${esc(r.sicurezza||'—')}${r.referenza?' · ref. '+esc(r.referenza):''}</p>
