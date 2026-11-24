@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Banco Orologi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -10,334 +10,369 @@
 <meta name="theme-color" content="#6b1e2a">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<script src="config.js"></script>
 <style>
-/* VOICE: un banco da commerciante, calmo e preciso, pensato per un uso al telefono
-   IDEA: il registro del banco orologi: quadrante, cartellino del prezzo, libro dei conti
-   PICTURE: un quadrante in acciaio con lancette vere che segnano l'ora
-   COLOUR and TYPE: bordeaux cinturino, acciaio, blu quadrante soleil; DM Serif Display + Inter
-   LAYOUT: fascia bordeaux con quadrante, schede grandi, una colonna sul telefono */
-:root{color-scheme:light dark;--bg:light-dark(#ffffff,#121214);--ink:light-dark(#161616,#ecebe8);--mut:light-dark(#5d6168,#a5a9b0);--line:light-dark(#e3e3e6,#2c2c31);--card:light-dark(#f6f6f7,#1b1b1f);--bord:light-dark(#6b1e2a,#4a1520);--steel:light-dark(#8a9099,#6d727a);--blue:light-dark(#2453b8,#7ea3ff);--ok:light-dark(#1f7a44,#6fd49a);--ko:light-dark(#a3261b,#ff8a7d)}
+/* VOICE: il banco di un commerciante di orologi, calmo, sicuro, da usare con una mano
+   IDEA: cartellini del prezzo e quadranti: ogni risultato è un cartellino appeso all'orologio
+   PICTURE: la barra dei prezzi (veloce, giusto, se puoi aspettare) con il segno di quanto hai pagato
+   COLOUR and TYPE: bordeaux cinturino, acciaio, blu quadrante; DM Serif Display per i prezzi, Inter per il resto
+   LAYOUT: barra in alto compatta, barra delle schede in basso come un'app Android, una colonna */
+:root{color-scheme:light dark;--bg:light-dark(#f3f2f0,#0f0f11);--sf:light-dark(#ffffff,#1a1a1e);--sf2:light-dark(#f7f6f4,#222227);--ink:light-dark(#18181a,#efeeeb);--mut:light-dark(#62656b,#a3a6ac);--line:light-dark(#e4e2de,#2d2d33);--bord:#6b1e2a;--bord2:light-dark(#6b1e2a,#e58a97);--blue:light-dark(#2453b8,#8fb0ff);--ok:light-dark(#1d7443,#71d69d);--ko:light-dark(#a3261b,#ff8f82);--sh:0 1px 2px rgb(0 0 0/.06),0 4px 16px rgb(0 0 0/.05)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
-*{box-sizing:border-box;min-width:0}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
-h1,h2{font-family:"DM Serif Display",Georgia,serif;font-weight:400;line-height:1.05;text-wrap:balance;margin:0}
-h1{font-size:clamp(32px,6vw,48px)}h2{font-size:28px;margin-bottom:6px}
-.band{padding:clamp(22px,4vw,48px) max(5vw,16px)}
-.wrap{max-width:1100px;margin:0 auto}
-header{background:var(--bord);color:#fff}
-header .wrap{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:20px;align-items:center}
-header p{margin:8px 0 0;color:#f1dfe2;max-width:46ch}
-.dial{width:150px;height:150px}
-nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;gap:6px;padding:8px max(5vw,16px);overflow-x:auto}
-nav a{flex:none;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;font-weight:600;min-height:44px;display:flex;align-items:center}
-nav a[aria-current=page]{background:var(--ink);color:var(--bg)}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+h1,h2,h3{margin:0;font-weight:600;line-height:1.15;text-wrap:balance}
+.serif{font-family:"DM Serif Display",Georgia,serif;font-weight:400}
+.top{position:sticky;top:0;z-index:20;background:var(--bord);color:#fff;padding:calc(10px + env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left));display:flex;align-items:center;gap:12px}
+.top svg{width:36px;height:36px;flex:none}.top h1{font-size:22px;flex:1}
+.top button{background:rgb(255 255 255/.14);color:#fff;border:0;border-radius:999px;padding:8px 14px;font:600 14px Inter,sans-serif;min-height:40px}
+main{max-width:680px;margin:0 auto;padding:18px 16px 8px}
 section[hidden]{display:none}
-.lead{color:var(--mut);margin:0 0 18px;max-width:62ch}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
-label{display:block;font-weight:600;font-size:14px;margin-bottom:4px}
-input,select,textarea{width:100%;font:inherit;font-size:16px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);min-height:46px}
-textarea{min-height:80px;resize:vertical}
-input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-button{font:inherit;font-weight:600;border:0;border-radius:12px;padding:12px 20px;min-height:48px;cursor:pointer;background:var(--bord);color:#fff}
-button.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
-button:disabled{opacity:.55;cursor:wait}
-.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
-.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px;margin-top:16px}
-.links a{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:14px;text-decoration:none;color:var(--ink);background:var(--bg)}
-.links a b{display:block;color:var(--blue)}.links a span{font-size:14px;color:var(--mut)}
-.out{margin-top:18px}.out:empty{display:none}
-.tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:600;background:var(--line)}
-.up{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}.down{background:color-mix(in srgb,var(--ko) 18%,transparent);color:var(--ko)}
-.price{font-family:"DM Serif Display",Georgia,serif;font-size:clamp(30px,6vw,44px);line-height:1;white-space:nowrap}
-.tickets{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;margin:14px 0}
-.ticket{border:1px dashed var(--steel);border-radius:12px;padding:12px 14px;background:var(--bg)}
-.ticket small{display:block;color:var(--mut);font-size:13px}
-.ticket .price{font-size:30px}
-ul{padding-left:20px;margin:6px 0}
-.drop{display:block;border:2px dashed var(--steel);border-radius:16px;padding:22px;text-align:center;cursor:pointer;background:var(--card)}
-.drop input{display:none}
-.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.thumbs img{width:84px;height:84px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.ttl{font-size:30px;margin:4px 0 4px}.sub{color:var(--mut);margin:0 0 16px}
+.card{background:var(--sf);border-radius:20px;padding:18px;box-shadow:var(--sh);margin-bottom:14px}
+label,.lab{display:block;font-weight:600;font-size:14px;margin:0 0 6px;color:var(--mut)}
+input,select,textarea{width:100%;font:inherit;font-size:17px;padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--sf2);color:var(--ink);min-height:52px}
+textarea{min-height:84px;resize:vertical}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+input:focus{border-color:var(--blue);outline:0}
+.fld{margin-bottom:14px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1.5px solid var(--line);background:var(--sf);color:var(--ink);border-radius:999px;padding:9px 15px;font:600 15px Inter,sans-serif;min-height:44px;cursor:pointer}
+.seg{display:flex;flex-wrap:wrap;gap:8px}.seg input{position:absolute;opacity:0;width:1px;height:1px}
+.seg label{margin:0;border:1.5px solid var(--line);border-radius:999px;padding:9px 14px;color:var(--ink);font-size:15px;cursor:pointer;min-height:44px;display:flex;align-items:center;background:var(--sf)}
+.seg input:checked+label{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.seg input:focus-visible+label{outline:3px solid var(--blue);outline-offset:2px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:16px;padding:15px 20px;min-height:56px;font:700 17px Inter,sans-serif;background:var(--bord);color:#fff;cursor:pointer}
+.btn.alt{background:var(--sf2);color:var(--ink);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.6}.btn svg{width:22px;height:22px}
+.row{display:flex;gap:10px;margin-top:12px}.row>*{flex:1}
+/* cartellino stima */
+.tag{position:relative;background:var(--sf);border-radius:20px;box-shadow:var(--sh);padding:20px 18px 18px;margin-bottom:14px;overflow:hidden}
+.tag::before{content:"";position:absolute;inset:0 0 auto;height:6px;background:var(--bord)}
+.kick{font-size:13px;color:var(--mut);margin:0 0 2px}
+.name{font-size:26px;line-height:1.1;margin:0 0 12px}
+.big{font-family:"DM Serif Display",Georgia,serif;font-size:clamp(34px,10vw,46px);line-height:1;white-space:nowrap}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0 6px}
+.cols div{background:var(--sf2);border-radius:14px;padding:10px 10px 12px;text-align:center}
+.cols small{display:block;font-size:12.5px;color:var(--mut);line-height:1.25;min-height:2.5em}
+.cols b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:clamp(20px,6vw,26px);white-space:nowrap}
+.cols .on{background:var(--bord);color:#fff}.cols .on small{color:#f3d9dd}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:14px;font-weight:600;background:var(--sf2);white-space:nowrap}
+.up{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}.down{background:color-mix(in srgb,var(--ko) 16%,transparent);color:var(--ko)}
+.verdict{display:flex;gap:12px;align-items:flex-start;background:var(--sf2);border-radius:14px;padding:14px;margin-top:12px}
+.verdict b{display:block;font-size:17px}
+.verdict .ico{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:18px}
+.scale{margin:18px 4px 8px}
+.bar{position:relative;height:12px;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--blue) 35%,transparent),var(--bord2))}
+.mk{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:var(--sf);border:3px solid var(--ink);transform:translate(-50%,-50%)}
+.mk.paid{border-radius:3px;width:4px;height:26px;background:var(--ink);border:0}
+.legend{position:relative;height:38px;font-size:12px;color:var(--mut)}
+.legend span{position:absolute;top:6px;transform:translateX(-50%);white-space:nowrap;text-align:center;line-height:1.2}
+.legend span:first-child{transform:none}.legend span:last-child{transform:translateX(-100%)}
+details.more{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+details.more summary{font-weight:600;cursor:pointer;min-height:40px;display:flex;align-items:center;color:var(--blue)}
+ul{padding-left:20px;margin:4px 0 10px}li{margin:3px 0}
 .note{font-size:13px;color:var(--mut)}
-.err{color:var(--ko);font-weight:600}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px;margin-bottom:16px}
-.stats div{background:var(--card);border-radius:14px;padding:14px}.stats small{color:var(--mut);display:block;font-size:13px}
-.stats b{font-size:24px;white-space:nowrap}
-.item{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
-.item img,.item .ph{width:72px;height:72px;border-radius:12px;object-fit:cover;background:var(--card)}
-.item h3{margin:0;font-size:17px}.item p{margin:2px 0;font-size:14px;color:var(--mut)}
-.item .r{text-align:right;white-space:nowrap}
-.spin{display:inline-block;width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--bord);border-radius:50%;animation:s 1s linear infinite;vertical-align:-4px;margin-right:8px}
-@keyframes s{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.spin{animation:none}}
-@media(max-width:600px){header .wrap{grid-template-columns:minmax(0,1fr) 96px}.dial{width:96px;height:96px}.item{grid-template-columns:56px minmax(0,1fr)}.item img,.item .ph{width:56px;height:56px}.item .r{grid-column:2;text-align:left}}
+.err{background:color-mix(in srgb,var(--ko) 12%,var(--sf));color:var(--ko);border-radius:14px;padding:14px;font-weight:600}
+/* siti */
+.sites{background:var(--sf);border-radius:20px;box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+.sites h3{font-size:16px;padding:16px 18px 6px}
+.site{display:flex;align-items:center;gap:14px;padding:12px 18px;min-height:64px;color:var(--ink);text-decoration:none;border-top:1px solid var(--line)}
+.site .av{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:700;color:#fff;flex:none;font-size:15px}
+.site b{display:block;font-size:16px}.site span{font-size:13.5px;color:var(--mut)}
+.site .go{margin-left:auto;color:var(--mut);font-size:22px}
+/* foto */
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;border:2px dashed color-mix(in srgb,var(--bord2) 50%,var(--line));border-radius:20px;padding:26px 16px;text-align:center;cursor:pointer;background:var(--sf2)}
+.drop svg{width:56px;height:56px;color:var(--bord2)}.drop b{font-size:18px}
+.drop input{display:none}
+.thumbs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.thumbs:empty{display:none}
+.thumbs div{position:relative;aspect-ratio:1}.thumbs img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+.thumbs button{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;border:0;background:rgb(0 0 0/.6);color:#fff;font-size:16px;line-height:1;cursor:pointer}
+.wait{display:flex;align-items:center;gap:14px;background:var(--sf);border-radius:20px;padding:20px;box-shadow:var(--sh);margin-bottom:14px}
+.wait svg{width:44px;height:44px;flex:none}
+.wait .hand{transform-origin:22px 22px;animation:r 1.2s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.wait .hand{animation:none}}
+/* collezione */
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.stats div{background:var(--sf);border-radius:18px;padding:14px 16px;box-shadow:var(--sh)}
+.stats small{display:block;color:var(--mut);font-size:13px}.stats b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:clamp(24px,7vw,30px);white-space:nowrap}
+.stats .hl{background:var(--bord);color:#fff}.stats .hl small{color:#f3d9dd}
+.item{display:flex;gap:14px;align-items:center;background:var(--sf);border-radius:18px;padding:12px;box-shadow:var(--sh);margin-bottom:10px;cursor:pointer;width:100%;border:0;text-align:left;font:inherit;color:inherit}
+.item img,.item .ph{width:64px;height:64px;border-radius:14px;object-fit:cover;flex:none;background:var(--sf2);display:grid;place-items:center}
+.item .ph svg{width:34px;height:34px;color:var(--mut)}
+.item h3{font-size:16.5px;margin-bottom:3px}.item p{margin:0;font-size:14px;color:var(--mut)}
+.item .r{margin-left:auto;text-align:right;flex:none}.item .r b{display:block;font-size:16px;white-space:nowrap}
+.st{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;margin-bottom:4px}
+.st.casa{background:var(--sf2)}.st.vendita{background:color-mix(in srgb,var(--blue) 15%,transparent);color:var(--blue)}.st.venduto{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.empty{text-align:center;padding:30px 20px;color:var(--mut)}.empty svg{width:70px;height:70px;margin-bottom:8px}
+/* foglio modifica */
+.sheet{position:fixed;inset:0;z-index:40;background:rgb(0 0 0/.45);display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none}
+.sheet form{background:var(--sf);width:100%;max-width:680px;max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;padding:10px 18px calc(18px + env(safe-area-inset-bottom))}
+.grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:4px auto 14px}
+/* barra in basso */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--sf);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--mut);font-size:12.5px;font-weight:600;padding:4px 0;min-height:56px}
+.tabs a span.i{display:grid;place-items:center;width:60px;height:32px;border-radius:999px}
+.tabs svg{width:24px;height:24px}
+.tabs a[aria-current=page]{color:var(--ink)}.tabs a[aria-current=page] span.i{background:color-mix(in srgb,var(--bord2) 18%,transparent);color:var(--bord2)}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;z-index:50;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1}
 </style></head><body>
-<header class="band"><div class="wrap">
-  <div><h1>Banco Orologi</h1><p>Cerca i prezzi di un modello, fai valutare un orologio da una foto e tieni il conto di quello che compri e vendi.</p>
-  <button type="button" id="inst" class="sec" hidden style="margin-top:14px">Metti l'app sulla schermata Home</button></div>
-  <svg class="dial" viewBox="0 0 200 200" aria-hidden="true">
-    <defs><radialGradient id="sb" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#4f7fe0"/><stop offset=".7" stop-color="#1d3f8f"/><stop offset="1" stop-color="#11285e"/></radialGradient>
-    <linearGradient id="st" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f5f7"/><stop offset=".5" stop-color="#9aa0a8"/><stop offset="1" stop-color="#e4e6ea"/></linearGradient></defs>
-    <circle cx="100" cy="104" r="94" fill="#000" opacity=".25"/>
-    <circle cx="100" cy="100" r="94" fill="url(#st)"/><circle cx="100" cy="100" r="80" fill="url(#sb)"/>
-    <g id="ticks"></g>
-    <g id="hh"><rect x="96" y="52" width="8" height="52" rx="3" fill="#f4f5f7"/></g>
-    <g id="mm"><rect x="97" y="30" width="6" height="74" rx="3" fill="#f4f5f7"/></g>
-    <g id="ss"><rect x="99" y="26" width="2" height="88" fill="#e0465a"/></g>
-    <circle cx="100" cy="100" r="6" fill="#f4f5f7"/>
-  </svg>
-</div></header>
-<nav><div class="wrap">
-  <a href="#cerca">Prezzi</a><a href="#valuta">Valuta</a><a href="#collezione">I miei orologi</a>
-</div></nav>
+<header class="top">
+  <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#c9cdd3"/><circle cx="20" cy="20" r="15.5" fill="#1d3f8f"/><g id="hh"><rect x="19" y="10" width="2.4" height="11" rx="1.2" fill="#fff"/></g><g id="mm"><rect x="19.2" y="6.5" width="1.8" height="14.5" rx=".9" fill="#fff"/></g><circle cx="20" cy="20" r="1.8" fill="#fff"/></svg>
+  <h1 class="serif">Banco Orologi</h1>
+  <button type="button" id="inst" hidden>Installa</button>
+</header>
 
 <main>
-<section id="v-cerca" class="band"><div class="wrap">
-  <h2>Cerca i prezzi</h2>
-  <p class="lead">Scrivi marca e modello: si aprono le ricerche già pronte sui siti dove si comprano e vendono orologi, ordinate dal prezzo più basso dove il sito lo permette, più una stima del valore di mercato.</p>
-  <form id="fCerca" class="card">
-    <div class="grid">
-      <div><label for="cMarca">Marca</label><input id="cMarca" placeholder="es. Rolex, Omega, Seiko" required></div>
-      <div><label for="cModello">Modello</label><input id="cModello" placeholder="es. Submariner, Speedmaster"></div>
-      <div><label for="cRef">Referenza (se la sai)</label><input id="cRef" placeholder="es. 16610, 3570.50"></div>
-      <div><label for="cStato">Condizione</label><select id="cStato"><option>Usato</option><option>Nuovo</option><option>Vintage</option></select></div>
-      <div><label for="cCorredo">Corredo</label><select id="cCorredo"><option>Scatola e garanzia</option><option>Solo scatola</option><option>Solo orologio</option><option>Non so</option></select></div>
-    </div>
-    <div class="row"><button type="submit">Cerca</button><button type="button" class="sec" id="cStima">Chiedi la stima di mercato</button></div>
+<section id="v-cerca">
+  <h2 class="ttl serif">Quanto vale?</h2>
+  <p class="sub">Scrivi l'orologio: ti do la stima e le ricerche pronte sui siti.</p>
+  <form id="fCerca" class="card" autocomplete="off">
+    <div class="fld"><label for="cMarca">Marca</label><input id="cMarca" placeholder="es. Omega" required>
+      <div class="chips" id="brands" style="margin-top:10px"></div></div>
+    <div class="two fld"><div><label for="cModello">Modello</label><input id="cModello" placeholder="es. Seamaster"></div><div><label for="cRef">Referenza</label><input id="cRef" placeholder="se la sai"></div></div>
+    <div class="fld"><span class="lab">Condizione</span><div class="seg" id="segStato"></div></div>
+    <div class="fld"><span class="lab">Corredo</span><div class="seg" id="segCorredo"></div></div>
+    <button class="btn" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Cerca</button>
   </form>
-  <div id="cLinks" class="out"></div>
-  <div id="cOut" class="out"></div>
-</div></section>
+  <div id="cOut"></div>
+  <div id="cLinks"></div>
+</section>
 
-<section id="v-valuta" class="band" hidden><div class="wrap">
-  <h2>Valuta da foto</h2>
-  <p class="lead">Carica 1–4 foto (quadrante, fondello, fibbia, eventuale garanzia). Ti dico che orologio sembra, quanto vale, a che prezzo metterlo in vendita e se conviene aspettare.</p>
+<section id="v-valuta" hidden>
+  <h2 class="ttl serif">Valuta da foto</h2>
+  <p class="sub">Fotografa quadrante, fondello e fibbia: ti dico cos'è e a quanto venderlo.</p>
   <div class="card">
-    <label class="drop" for="vFoto"><b>Tocca per scegliere o scattare le foto</b><br><span class="note">Più foto nitide e con buona luce = valutazione migliore</span><input id="vFoto" type="file" accept="image/*" multiple></label>
+    <label class="drop" for="vFoto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2.5l1.5-2h6l1.5 2H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="4"/></svg><b>Scatta o scegli le foto</b><span class="note">Fino a 4 foto, con buona luce</span><input id="vFoto" type="file" accept="image/*" multiple></label>
     <div class="thumbs" id="vThumbs"></div>
-    <div class="grid" style="margin-top:14px">
-      <div><label for="vPagato">Prezzo pagato (€, facoltativo)</label><input id="vPagato" inputmode="decimal" placeholder="es. 4500"></div>
-      <div><label for="vCorredo">Corredo</label><select id="vCorredo"><option>Non so</option><option>Scatola e garanzia</option><option>Solo scatola</option><option>Solo orologio</option></select></div>
-    </div>
-    <div style="margin-top:12px"><label for="vNote">Cosa sai dell'orologio (facoltativo)</label><textarea id="vNote" placeholder="es. anno 2008, revisionato nel 2022, piccolo graffio sulla lunetta"></textarea></div>
-    <div class="row"><button id="vGo" type="button">Valuta l'orologio</button><span class="note" id="vMsg"></span></div>
+    <div class="two fld" style="margin-top:16px"><div><label for="vPagato">Pagato (€)</label><input id="vPagato" inputmode="decimal" placeholder="facoltativo"></div><div><label for="vCorredo">Corredo</label><select id="vCorredo"><option>Non so</option><option>Scatola e garanzia</option><option>Solo scatola</option><option>Solo orologio</option></select></div></div>
+    <div class="fld"><label for="vNote">Cosa sai dell'orologio</label><textarea id="vNote" placeholder="es. anno 2008, revisionato nel 2022, graffio sulla lunetta"></textarea></div>
+    <button id="vGo" class="btn" type="button">Valuta l'orologio</button>
   </div>
-  <div id="vOut" class="out"></div>
-</div></section>
+  <div id="vOut"></div>
+</section>
 
-<section id="v-collezione" class="band" hidden><div class="wrap">
-  <h2>I miei orologi</h2>
-  <p class="lead">Quello che hai in casa, in vendita o già venduto, con quanto hai speso e guadagnato.</p>
+<section id="v-collezione" hidden>
+  <h2 class="ttl serif">I miei orologi</h2>
+  <p class="sub">In casa, in vendita e venduti, con quanto hai speso e guadagnato.</p>
   <div class="stats" id="kStats"></div>
-  <div class="row" style="margin:0 0 10px"><button type="button" id="kNew">Aggiungi orologio</button><span class="note" id="kMsg"></span></div>
-  <form id="fItem" class="card" hidden>
-    <div class="grid">
-      <div><label for="iNome">Orologio</label><input id="iNome" required placeholder="es. Omega Seamaster 300M"></div>
-      <div><label for="iRef">Referenza</label><input id="iRef"></div>
-      <div><label for="iPagato">Pagato (€)</label><input id="iPagato" inputmode="decimal"></div>
-      <div><label for="iStima">Valore stimato (€)</label><input id="iStima" inputmode="decimal"></div>
-      <div><label for="iPrezzo">Prezzo di vendita richiesto (€)</label><input id="iPrezzo" inputmode="decimal"></div>
-      <div><label for="iStato">Stato</label><select id="iStato"><option value="casa">In casa</option><option value="vendita">In vendita</option><option value="venduto">Venduto</option></select></div>
-      <div><label for="iVenduto">Venduto a (€)</label><input id="iVenduto" inputmode="decimal"></div>
-    </div>
-    <div style="margin-top:12px"><label for="iNote">Note</label><textarea id="iNote"></textarea></div>
-    <div class="row"><button type="submit">Salva</button><button type="button" class="sec" id="iAnn">Annulla</button><button type="button" class="sec" id="iDel" hidden>Elimina</button></div>
-  </form>
+  <div class="chips" id="kFilter" style="margin-bottom:10px"></div>
   <div id="kList"></div>
-  <div class="card" style="margin-top:20px">
-    <b>Copia di sicurezza</b>
-    <p class="note" style="margin:4px 0 0">Gli orologi sono salvati solo su questo telefono. Ogni tanto scarica una copia, così non perdi niente se cambi telefono.</p>
-    <div class="row"><button type="button" class="sec" id="bOut">Scarica copia</button><label class="sec" for="bIn" style="display:inline-flex;align-items:center;padding:12px 20px;min-height:48px;border-radius:12px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;font-size:16px;margin:0">Ripristina da copia</label><input type="file" id="bIn" accept="application/json,.json" hidden></div>
+  <button type="button" class="btn" id="kNew" style="margin-top:6px">+ Aggiungi orologio</button>
+  <div class="card" style="margin-top:22px">
+    <h3 style="font-size:16px">Copia di sicurezza</h3>
+    <p class="note" style="margin:4px 0 0">Gli orologi sono salvati su questo telefono. Ogni tanto scarica una copia, così non perdi niente se cambi telefono.</p>
+    <div class="row"><button type="button" class="btn alt" id="bOut">Scarica</button><label class="btn alt" for="bIn" style="margin:0;color:var(--ink);font-size:17px">Ripristina</label></div>
+    <input type="file" id="bIn" accept="application/json,.json" hidden>
   </div>
-  <details class="card" style="margin-top:12px"><summary style="cursor:pointer;font-weight:600;min-height:28px">Impostazioni valutazione</summary>
-    <p class="note">Da compilare solo se te lo chiede Lorenzo.</p>
-    <div><label for="sKey">Chiave Gemini</label><input id="sKey" placeholder="Incolla qui la chiave" autocomplete="off" spellcheck="false"></div>
-    <div class="row"><button type="button" class="sec" id="sSave">Salva impostazioni</button><span class="note" id="sMsg"></span></div>
+  <details class="card"><summary style="cursor:pointer;font-weight:600;min-height:32px">Impostazioni valutazione</summary>
+    <p class="note">Da toccare solo se te lo chiede Lorenzo.</p>
+    <div class="fld"><label for="sKey">Chiave Gemini</label><input id="sKey" placeholder="Incolla qui la chiave" autocomplete="off" spellcheck="false"></div>
+    <button type="button" class="btn alt" id="sSave">Salva chiave</button>
   </details>
-</div></section>
+  <p class="note" style="padding:0 4px">Le stime sono fatte dall'intelligenza artificiale (Gemini di Google): sono indicative e non leggono gli annunci di oggi. Controlla i prezzi veri con le ricerche sui siti. L'autenticità si verifica solo dal vivo, da un orologiaio di fiducia.</p>
+</section>
 </main>
-<footer class="band note"><div class="wrap">Le stime sono fatte dall'intelligenza artificiale (Gemini di Google), sono indicative e non leggono gli annunci di oggi: controlla sempre i prezzi veri con i link della ricerca. L'autenticità si verifica solo dal vivo, da un orologiaio di fiducia.</div></footer>
+
+<div class="sheet" id="sheet" hidden>
+  <form id="fItem">
+    <div class="grab"></div>
+    <h3 class="serif" style="font-size:24px;margin-bottom:14px" id="fTitle">Aggiungi orologio</h3>
+    <div class="fld"><label for="iNome">Orologio</label><input id="iNome" required placeholder="es. Omega Seamaster 300M"></div>
+    <div class="fld"><label for="iRef">Referenza</label><input id="iRef"></div>
+    <div class="fld"><span class="lab">Stato</span><div class="seg" id="segItem"></div></div>
+    <div class="two fld"><div><label for="iPagato">Pagato (€)</label><input id="iPagato" inputmode="decimal"></div><div><label for="iStima">Valore stimato (€)</label><input id="iStima" inputmode="decimal"></div></div>
+    <div class="two fld"><div><label for="iPrezzo">Prezzo richiesto (€)</label><input id="iPrezzo" inputmode="decimal"></div><div><label for="iVenduto">Venduto a (€)</label><input id="iVenduto" inputmode="decimal"></div></div>
+    <div class="fld"><label for="iNote">Note</label><textarea id="iNote"></textarea></div>
+    <button class="btn" type="submit">Salva</button>
+    <div class="row"><button type="button" class="btn alt" id="iAnn">Annulla</button><button type="button" class="btn alt" id="iDel" style="color:var(--ko)">Elimina</button></div>
+  </form>
+</div>
+
+<nav class="tabs">
+  <a href="#cerca"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>Prezzi</a>
+  <a href="#valuta"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2.5l1.5-2h6l1.5 2H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="4"/></svg></span>Valuta</a>
+  <a href="#collezione"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="5" rx="1"/><rect x="7" y="17" width="10" height="5" rx="1"/><circle cx="12" cy="12" r="6"/><path d="M12 9v3l2 1.5" stroke-linecap="round"/></svg></span>I miei</a>
+</nav>
+<div class="toast" id="toast" role="status"></div>
 
 <script>
 {
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=v=>{const n=parseFloat(String(v??'').replace(/\./g,'').replace(',','.'));return isFinite(n)?n:null};
-const eur=n=>n==null||!isFinite(n)?'—':new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
-const spin=t=>`<div class="card"><span class="spin"></span>${esc(t)}</div>`;
+const N=v=>typeof v==='number'&&isFinite(v)?v:num(v);
+const eur=n=>n==null||!isFinite(n)?'—':new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0,useGrouping:'always'}).format(n);
+const getLS=(k,d='')=>{try{return localStorage.getItem(k)??d}catch{return d}};
+const setLS=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
+let tt;const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2200)};
+const WATCH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="5" rx="1"/><rect x="7" y="17" width="10" height="5" rx="1"/><circle cx="12" cy="12" r="6"/><path d="M12 9v3l2 1.5" stroke-linecap="round"/></svg>';
+const wait=t=>`<div class="wait"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="20" fill="#1d3f8f"/><g class="hand"><rect x="21" y="7" width="2" height="16" rx="1" fill="#fff"/></g><circle cx="22" cy="22" r="2.5" fill="#fff"/></svg><div><b>${esc(t)}</b><div class="note">Di solito ci vogliono 10–20 secondi</div></div></div>`;
 
-/* quadrante */
-const ticks=$('#ticks');ticks.innerHTML=Array.from({length:12},(_,i)=>`<rect x="${i%3?98:96}" y="24" width="${i%3?4:8}" height="${i%3?10:16}" rx="1" fill="#f4f5f7" transform="rotate(${i*30} 100 100)"/>`).join('');
-const tick=()=>{const d=new Date(),s=d.getSeconds(),m=d.getMinutes()+s/60,h=d.getHours()%12+m/60;
-  $('#ss').setAttribute('transform',`rotate(${s*6} 100 100)`);$('#mm').setAttribute('transform',`rotate(${m*6} 100 100)`);$('#hh').setAttribute('transform',`rotate(${h*30} 100 100)`)};
-tick();setInterval(tick,matchMedia('(prefers-reduced-motion: reduce)').matches?30000:1000);
+/* orologio nella barra */
+const tick=()=>{const d=new Date(),m=d.getMinutes(),h=d.getHours()%12+m/60;$('#mm').setAttribute('transform',`rotate(${m*6} 20 20)`);$('#hh').setAttribute('transform',`rotate(${h*30} 20 20)`)};
+tick();setInterval(tick,30000);
 
-/* viste */
+/* schede */
 const views=['cerca','valuta','collezione'];
 const show=()=>{const v=views.includes(location.hash.slice(1))?location.hash.slice(1):'cerca';
   views.forEach(n=>{$('#v-'+n).hidden=n!==v});
-  document.querySelectorAll('nav a').forEach(a=>{if(a.hash==='#'+v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')})};
-addEventListener('hashchange',()=>{show();scrollTo(0,0)});show();
+  document.querySelectorAll('.tabs a').forEach(a=>{if(a.hash==='#'+v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')})};
+addEventListener('hashchange',()=>{show();scrollTo(0,0)});
+if(location.hash.startsWith('#k=')){setLS('banco-key',decodeURIComponent(location.hash.slice(3)).trim());history.replaceState(null,'',location.pathname+'#valuta')}
+show();
 
-/* Claude */
-/* IA tramite il server Gemini */
-const getLS=(k,d='')=>{try{return localStorage.getItem(k)??d}catch{return d}};
-const setLS=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
-const cfg=()=>({key:getLS('banco-key'),url:getLS('banco-url')||window.BANCO_CONFIG?.servizio||'',cod:getLS('banco-cod')||window.BANCO_CONFIG?.codice||''});
-/* link di attivazione: ...#k=CHIAVE salva la chiave sul telefono e la toglie dall'indirizzo */
-if(location.hash.startsWith('#k=')){setLS('banco-key',decodeURIComponent(location.hash.slice(3)).trim());history.replaceState(null,'',location.pathname+'#valuta');show()}
+/* gruppi di scelta */
+const seg=(el,name,opts,val)=>{$(el).innerHTML=opts.map(([v,l],i)=>`<input type="radio" name="${name}" id="${name}${i}" value="${esc(v)}" ${v===val?'checked':''}><label for="${name}${i}">${esc(l)}</label>`).join('')};
+const segVal=n=>document.querySelector(`input[name=${n}]:checked`)?.value||'';
+seg('#segStato','stato',[['Usato','Usato'],['Nuovo','Nuovo'],['Vintage','Vintage']],'Usato');
+seg('#segCorredo','corredo',[['Scatola e garanzia','Scatola e garanzia'],['Solo orologio','Solo orologio'],['Non so','Non so']],'Scatola e garanzia');
+seg('#segItem','istato',[['casa','In casa'],['vendita','In vendita'],['venduto','Venduto']],'casa');
+const BR=['Seiko','Tissot','Longines','Omega','Tudor','TAG Heuer','Hamilton','Oris','Breitling','Citizen','Rolex','Panerai'];
+$('#brands').innerHTML=BR.map(b=>`<button type="button" class="chip" data-b="${esc(b)}">${esc(b)}</button>`).join('');
+$('#brands').addEventListener('click',e=>{const b=e.target.closest('[data-b]');if(b){$('#cMarca').value=b.dataset.b;$('#cModello').focus()}});
+
+/* Gemini */
 const toB64=b=>new Promise((ok,ko)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=ko;r.readAsDataURL(b)});
 async function ask(prompt,images=[]){
-  const {key,url,cod}=cfg();if(!key&&!url)throw{code:'no_config'};
-  const imgs=[];for(const b of images)imgs.push({mime:'image/jpeg',data:await toB64(b)});
-  let r;
-  try{
-    if(key){r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},
-      body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt},...imgs.map(i=>({inline_data:{mime_type:i.mime,data:i.data}}))]}],generationConfig:{responseMimeType:'application/json',temperature:0.3}})})}
-    else r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-Codice':cod},body:JSON.stringify({prompt,images:imgs})});
-  }catch{throw{code:'offline'}}
-  if(r.status===429)throw{code:'rate_limited'};
-  if(key&&(r.status===400||r.status===403))throw{code:'bad_key'};
+  const key=getLS('banco-key');if(!key)throw{code:'no_config'};
+  const parts=[{text:prompt}];for(const b of images)parts.push({inline_data:{mime_type:'image/jpeg',data:await toB64(b)}});
+  let r;try{r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},
+    body:JSON.stringify({contents:[{role:'user',parts}],generationConfig:{responseMimeType:'application/json',temperature:0.3}})})}catch{throw{code:'offline'}}
+  if(r.status===429)throw{code:'rate_limited'};if(r.status===400||r.status===401||r.status===403)throw{code:'bad_key'};
   const j=await r.json().catch(()=>({}));if(!r.ok)throw{code:'server'};
-  if(!key){if(!j.risultato)throw{code:'server'};return j.risultato}
   const t=(j.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('');
   try{return JSON.parse(t)}catch{throw{code:'server'}}}
-const sampler=async()=>({json:(p,o={})=>ask(p,o.images||[]),limits:async()=>({images:true})});
 const CTX='Contesto: il proprietario è un privato di Napoli che compra e rivende orologi usati, di solito nella fascia tra 200 e 10.000 euro (marche come Seiko, Tissot, Longines, Omega, Tudor, TAG Heuer, Hamilton, Oris, Breitling e simili; raramente alta orologeria).';
-const errMsg=e=>e?.code==='no_config'?'La stima non è ancora attiva: serve la chiave Gemini (I miei orologi → Impostazioni valutazione).':e?.code==='bad_key'?'La chiave Gemini non funziona: controllala in I miei orologi → Impostazioni valutazione.':e?.code==='offline'?'Non c\'è connessione a internet. Riprova quando sei connesso.':e?.code==='rate_limited'?'Troppe richieste per oggi o in pochi minuti: riprova più tardi.':'Non sono riuscito a fare la stima. Riprova tra poco.';
+const errMsg=e=>({no_config:'La stima non è ancora attiva: serve la chiave Gemini (I miei → Impostazioni valutazione).',bad_key:'La chiave Gemini non funziona: controllala in I miei → Impostazioni valutazione.',offline:'Non c\'è connessione a internet. Riprova quando sei connesso.',rate_limited:'Troppe richieste per oggi o in pochi minuti: riprova più tardi.'})[e?.code]||'Non sono riuscito a fare la stima. Riprova tra poco.';
+const trend=d=>{d=String(d||'').toLowerCase();return d.startsWith('sal')?'<span class="pill up">↗ In salita</span>':d.startsWith('scend')||d.startsWith('disc')?'<span class="pill down">↘ In discesa</span>':'<span class="pill">→ Stabile</span>'};
+const list=a=>Array.isArray(a)&&a.length?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
 
 /* --- CERCA --- */
 const q=()=>[$('#cMarca').value,$('#cModello').value,$('#cRef').value].map(s=>s.trim()).filter(Boolean).join(' ');
-const sites=s=>{const e=encodeURIComponent(s);return[
-  ['Chrono24','Il mercato più grande di orologi, annunci da tutta Europa',`https://www.chrono24.it/search/index.htm?query=${e}&sortorder=1`],
-  ['eBay – venduti','Prezzi a cui sono stati davvero venduti',`https://www.ebay.it/sch/i.html?_nkw=${e}&LH_Sold=1&LH_Complete=1`],
-  ['eBay – in vendita','Dal prezzo più basso',`https://www.ebay.it/sch/i.html?_nkw=${e}&_sop=15`],
-  ['Subito','Privati in Italia, spesso si tratta',`https://www.subito.it/annunci-italia/vendita/usato/?q=${e}&order=priceasc`],
-  ['Catawiki','Aste settimanali, utile per i vintage',`https://www.catawiki.com/it/s?q=${e}`],
-  ['Vinted','Occasioni tra privati',`https://www.vinted.it/catalog?search_text=${e}&order=price_low_to_high`],
-  ['Google Shopping','Negozi e rivenditori',`https://www.google.com/search?tbm=shop&q=${e}`]]};
-const renderLinks=()=>{const s=q();if(!s)return;
-  $('#cLinks').innerHTML=`<p class="note">Ricerche per “${esc(s)}”. Si aprono in una nuova finestra.</p><div class="links">${sites(s).map(([n,d,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener"><b>${esc(n)} →</b><span>${esc(d)}</span></a>`).join('')}</div>`};
-$('#fCerca').addEventListener('submit',e=>{e.preventDefault();renderLinks()});
-const trendTag=d=>{d=String(d||'').toLowerCase();return d.startsWith('sal')?'<span class="tag up">In salita</span>':d.startsWith('scend')?'<span class="tag down">In discesa</span>':'<span class="tag">Stabile</span>'};
-const list=a=>Array.isArray(a)&&a.length?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
-$('#cStima').addEventListener('click',async()=>{
-  const s=q();if(!s){$('#cMarca').focus();return}renderLinks();
-  const btn=$('#cStima');btn.disabled=true;$('#cOut').innerHTML=spin('Sto preparando la stima di mercato…');
-  try{const sm=await sampler();if(!sm)throw{code:'not_granted'};
-    const r=await sm.json(`Sei un commerciante esperto di orologi sul mercato italiano ed europeo (Chrono24, eBay venduti, Subito, Catawiki). ${CTX} Orologio: "${s}". Condizione: ${$('#cStato').value}. Corredo: ${$('#cCorredo').value}.
+const SITES=[['Chrono24','Il mercato più grande, dal prezzo più basso','#1f3f6e',e=>`https://www.chrono24.it/search/index.htm?query=${e}&sortorder=1`],
+  ['eBay venduti','A quanto sono stati davvero venduti','#7a5a12',e=>`https://www.ebay.it/sch/i.html?_nkw=${e}&LH_Sold=1&LH_Complete=1`],
+  ['eBay in vendita','Annunci di oggi, dal più economico','#7a5a12',e=>`https://www.ebay.it/sch/i.html?_nkw=${e}&_sop=15`],
+  ['Subito','Privati in Italia, spesso si tratta','#a3261b',e=>`https://www.subito.it/annunci-italia/vendita/usato/?q=${e}&order=priceasc`],
+  ['Catawiki','Aste settimanali, buone per i vintage','#3d5a3a',e=>`https://www.catawiki.com/it/s?q=${e}`],
+  ['Vinted','Occasioni tra privati','#2f6e6e',e=>`https://www.vinted.it/catalog?search_text=${e}&order=price_low_to_high`],
+  ['Google Shopping','Negozi e rivenditori','#4a4f57',e=>`https://www.google.com/search?tbm=shop&q=${e}`]];
+const renderLinks=s=>{const e=encodeURIComponent(s);
+  $('#cLinks').innerHTML=`<div class="sites"><h3>Cerca “${esc(s)}” sui siti</h3>${SITES.map(([n,d,c,u])=>`<a class="site" href="${esc(u(e))}" target="_blank" rel="noopener"><span class="av" style="background:${c}">${esc(n.slice(0,2))}</span><span><b>${esc(n)}</b><span>${esc(d)}</span></span><span class="go">›</span></a>`).join('')}</div>`};
+let busyC=false;
+$('#fCerca').addEventListener('submit',async ev=>{ev.preventDefault();const s=q();if(!s||busyC)return;
+  document.activeElement?.blur();renderLinks(s);
+  if(!getLS('banco-key')){$('#cOut').innerHTML='';$('#cOut').scrollIntoView({behavior:'smooth'});return}
+  busyC=true;$('#cOut').innerHTML=wait('Preparo la stima…');$('#cOut').scrollIntoView({behavior:'smooth',block:'start'});
+  try{const r=await ask(`Sei un commerciante esperto di orologi sul mercato italiano ed europeo (Chrono24, eBay venduti, Subito, Catawiki). ${CTX} Orologio: "${s}". Condizione: ${segVal('stato')}. Corredo: ${segVal('corredo')}.
 Dai una stima realistica in euro dei prezzi a cui si compra e si vende oggi questo orologio. Se il modello è ambiguo, scegli la variante più comune e dillo. Non inventare referenze: se non sei sicuro, dillo.
 Rispondi SOLO con JSON: {"modello":"nome completo riconosciuto","listino_nuovo":numero o null,"mercato_min":numero,"mercato_max":numero,"prezzo_acquisto_buono":numero (sotto questo è un affare),"tendenza":"salita|stabile|discesa","motivo_tendenza":"una frase","varianti":["referenze o varianti che cambiano il prezzo"],"controlli":["cosa controllare prima di comprare"],"note":"2-3 frasi sul mercato di questo modello"}`);
-    $('#cOut').innerHTML=`<div class="card"><p class="note">Stima indicativa, non presa dagli annunci di oggi</p><h2>${esc(r.modello)}</h2>
-      <div class="tickets"><div class="ticket"><small>Prezzo di mercato usato</small><span class="price">${eur(r.mercato_min)} – ${eur(r.mercato_max)}</span></div>
-      <div class="ticket"><small>È un affare sotto</small><span class="price">${eur(r.prezzo_acquisto_buono)}</span></div>
-      <div class="ticket"><small>Listino nuovo</small><span class="price">${eur(r.listino_nuovo)}</span></div></div>
-      <p>${trendTag(r.tendenza)} ${esc(r.motivo_tendenza)}</p><p>${esc(r.note)}</p>
-      ${r.varianti?.length?'<b>Varianti che cambiano il prezzo</b>'+list(r.varianti):''}${r.controlli?.length?'<b>Prima di comprare controlla</b>'+list(r.controlli):''}</div>`;
-  }catch(e){$('#cOut').innerHTML=`<p class="err">${esc(errMsg(e))}</p>`}finally{btn.disabled=false}
+    $('#cOut').innerHTML=`<div class="tag"><p class="kick">Stima di mercato · usato, ${esc(segVal('corredo').toLowerCase())}</p><h3 class="name serif">${esc(r.modello||s)}</h3>
+      <div class="big">${eur(N(r.mercato_min))} – ${eur(N(r.mercato_max))}</div>
+      <div class="cols"><div class="on"><small>Affare se lo trovi sotto</small><b>${eur(N(r.prezzo_acquisto_buono))}</b></div><div><small>Listino nuovo</small><b>${eur(N(r.listino_nuovo))}</b></div><div><small>Andamento</small><b style="font:600 15px Inter,sans-serif">${trend(r.tendenza)}</b></div></div>
+      <p style="margin:12px 0 0">${esc(r.note)} ${esc(r.motivo_tendenza)}</p>
+      ${(r.varianti?.length||r.controlli?.length)?`<details class="more"><summary>Varianti e cosa controllare</summary>${r.varianti?.length?'<b>Varianti che cambiano il prezzo</b>'+list(r.varianti):''}${r.controlli?.length?'<b>Prima di comprare controlla</b>'+list(r.controlli):''}</details>`:''}</div>`;
+  }catch(e){$('#cOut').innerHTML=`<div class="err">${esc(errMsg(e))}</div>`}finally{busyC=false}
 });
 
 /* --- VALUTA --- */
-let photos=[],thumb='',lastVal=null;
+let photos=[],thumb='';
 const shrink=async(f,max)=>{const b=await createImageBitmap(f),k=Math.min(1,max/Math.max(b.width,b.height)),c=document.createElement('canvas');
   c.width=Math.round(b.width*k);c.height=Math.round(b.height*k);c.getContext('2d').drawImage(b,0,0,c.width,c.height);return c};
+const drawThumbs=()=>{$('#vThumbs').innerHTML=photos.map((p,i)=>`<div><img alt="Foto ${i+1}" src="${p.url}"><button type="button" data-rm="${i}" aria-label="Togli foto">×</button></div>`).join('')};
 $('#vFoto').addEventListener('change',async e=>{
-  const fs=[...e.target.files].slice(0,4);photos=[];$('#vMsg').textContent='';
-  for(const f of fs){try{const c=await shrink(f,1400);photos.push(await new Promise(r=>c.toBlob(r,'image/jpeg',.85)))}catch{}}
-  if(fs[0]){try{thumb=(await shrink(fs[0],220)).toDataURL('image/jpeg',.75)}catch{thumb=''}}
-  $('#vThumbs').innerHTML=photos.map(p=>`<img alt="Foto caricata" src="${URL.createObjectURL(p)}">`).join('');
-});
+  for(const f of [...e.target.files]){if(photos.length>=4)break;try{const c=await shrink(f,1400);const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.85));photos.push({blob,url:URL.createObjectURL(blob)});
+    if(!thumb)thumb=(await shrink(f,220)).toDataURL('image/jpeg',.75)}catch{}}
+  e.target.value='';drawThumbs()});
+$('#vThumbs').addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(!b)return;photos.splice(+b.dataset.rm,1);if(!photos.length)thumb='';drawThumbs()});
+const scale=(r,pag)=>{const pts=[N(r.prezzo_veloce),N(r.prezzo_giusto),N(r.prezzo_ambizioso)];if(pts.some(x=>x==null))return'';
+  const all=pts.concat(pag??[]),lo=Math.min(...all)*.93,hi=Math.max(...all)*1.05,x=v=>((v-lo)/(hi-lo)*100).toFixed(1)+'%';
+  return `<div class="scale"><div class="bar">${pts.map(v=>`<span class="mk" style="left:${x(v)}"></span>`).join('')}${pag?`<span class="mk paid" style="left:${x(pag)}" title="Pagato"></span>`:''}</div>
+  <div class="legend">${pag?`<span style="left:${x(pag)};transform:translateX(-50%);top:18px;font-weight:700;color:var(--ink)">pagato ${eur(pag)}</span>`:''}</div></div>`};
 $('#vGo').addEventListener('click',async()=>{
-  if(!photos.length){$('#vMsg').textContent='Prima carica almeno una foto.';return}
-  const btn=$('#vGo');btn.disabled=true;$('#vOut').innerHTML=spin('Sto guardando le foto e valutando l\'orologio…');
-  try{const sm=await sampler();if(!sm)throw{code:'not_granted'};
-    const lim=await sm.limits?.().catch(()=>null);if(lim&&!lim.images)throw{code:'no_images'};
-    const pag=num($('#vPagato').value);
-    const r=await sm.json(`Sei un perito e commerciante esperto di orologi per il mercato italiano ed europeo dell'usato (Chrono24, eBay venduti, Subito, Catawiki). ${CTX} Guarda le foto allegate di un orologio.
+  if(!photos.length){toast('Prima aggiungi almeno una foto');return}
+  const btn=$('#vGo');btn.disabled=true;$('#vOut').innerHTML=wait('Guardo le foto e valuto…');$('#vOut').scrollIntoView({behavior:'smooth',block:'start'});
+  const pag=num($('#vPagato').value);
+  try{const r=await ask(`Sei un perito e commerciante esperto di orologi per il mercato italiano ed europeo dell'usato (Chrono24, eBay venduti, Subito, Catawiki). ${CTX} Guarda le foto allegate di un orologio.
 Corredo: ${$('#vCorredo').value}. ${pag?`Il proprietario l'ha pagato ${pag} euro.`:''} Note del proprietario: ${$('#vNote').value.trim()||'nessuna'}.
 1) Riconosci marca, modello e se possibile referenza; indica quanto sei sicuro. 2) Descrivi le condizioni visibili. 3) Stima il valore di mercato oggi in euro. 4) Proponi tre prezzi per metterlo in vendita: veloce (si vende in pochi giorni), giusto, ambizioso (per chi può aspettare). 5) Di' se il prezzo di questo modello tende a salire, restare stabile o scendere nei prossimi 1-2 anni e perché. 6) Consiglia se tenerlo o venderlo ora. Non dichiarare mai che è autentico: elenca i controlli da fare. Se le foto non bastano, dillo e chiedi quali foto servono.
-Rispondi SOLO con JSON: {"marca":"","modello":"","referenza":"o stringa vuota","sicurezza":"alta|media|bassa","condizioni":"1-2 frasi","valore_min":numero,"valore_max":numero,"prezzo_veloce":numero,"prezzo_giusto":numero,"prezzo_ambizioso":numero,"tendenza":"salita|stabile|discesa","motivo_tendenza":"1-2 frasi","consiglio":"tenere|vendere","motivo_consiglio":"1-2 frasi","dove_vendere":"dove conviene metterlo in vendita e perché, 1 frase","controlli":["controlli di autenticità e condizioni"],"foto_mancanti":["foto utili da aggiungere, se servono"]}`,{images:photos});
-    lastVal={...r,pagato:pag};
-    const nome=[r.marca,r.modello].filter(Boolean).join(' ');
-    const diff=pag&&r.prezzo_giusto?r.prezzo_giusto-pag:null;
-    $('#vOut').innerHTML=`<div class="card"><p class="note">Riconoscimento: sicurezza ${esc(r.sicurezza||'—')} · stima indicativa</p>
-      <h2>${esc(nome||'Orologio non riconosciuto')}${r.referenza?` <span class="note">ref. ${esc(r.referenza)}</span>`:''}</h2>
-      <p>${esc(r.condizioni)}</p>
-      <p><small class="note">Valore di mercato oggi</small><br><span class="price">${eur(r.valore_min)} – ${eur(r.valore_max)}</span></p>
-      <div class="tickets"><div class="ticket"><small>Per vendere in fretta</small><span class="price">${eur(r.prezzo_veloce)}</span></div>
-      <div class="ticket"><small>Prezzo giusto</small><span class="price">${eur(r.prezzo_giusto)}</span></div>
-      <div class="ticket"><small>Se puoi aspettare</small><span class="price">${eur(r.prezzo_ambizioso)}</span></div></div>
-      ${diff!=null?`<p><b>Rispetto a quanto pagato:</b> <span class="tag ${diff>=0?'up':'down'}">${diff>=0?'+':''}${eur(diff)}</span> al prezzo giusto</p>`:''}
-      <p>${trendTag(r.tendenza)} ${esc(r.motivo_tendenza)}</p>
-      <p><b>Consiglio: ${r.consiglio==='tenere'?'tenerlo':'venderlo ora'}.</b> ${esc(r.motivo_consiglio)}</p>
-      <p>${esc(r.dove_vendere)}</p>
-      ${r.controlli?.length?'<b>Da controllare</b>'+list(r.controlli):''}${r.foto_mancanti?.length?'<b>Foto che aiuterebbero</b>'+list(r.foto_mancanti):''}
-      <div class="row"><button type="button" id="vSave">Salva nei miei orologi</button><button type="button" class="sec" id="vSearch">Cerca i prezzi di questo modello</button></div></div>`;
-    $('#vSearch').onclick=()=>{$('#cMarca').value=r.marca||'';$('#cModello').value=r.modello||'';$('#cRef').value=r.referenza||'';location.hash='cerca';renderLinks()};
-    $('#vSave').onclick=async()=>{await saveItem(null,{nome,ref:r.referenza||'',pagato:pag,stima:r.prezzo_giusto??null,prezzo:r.prezzo_giusto??null,stato:'casa',venduto:null,note:`${r.condizioni||''} Tendenza: ${r.tendenza||''}.`.trim(),thumb});location.hash='collezione'};
-  }catch(e){$('#vOut').innerHTML=`<p class="err">${esc(e?.code==='no_images'?'Qui le foto non possono essere inviate a Claude.':errMsg(e))}</p>`}finally{btn.disabled=false}
+Rispondi SOLO con JSON: {"marca":"","modello":"","referenza":"o stringa vuota","sicurezza":"alta|media|bassa","condizioni":"1-2 frasi","valore_min":numero,"valore_max":numero,"prezzo_veloce":numero,"prezzo_giusto":numero,"prezzo_ambizioso":numero,"tendenza":"salita|stabile|discesa","motivo_tendenza":"1-2 frasi","consiglio":"tenere|vendere","motivo_consiglio":"1-2 frasi","dove_vendere":"dove conviene metterlo in vendita e perché, 1 frase","controlli":["controlli di autenticità e condizioni"],"foto_mancanti":["foto utili da aggiungere, se servono"]}`,photos.map(p=>p.blob));
+    const nome=[r.marca,r.modello].filter(Boolean).join(' ')||'Orologio non riconosciuto';
+    const giusto=N(r.prezzo_giusto),diff=pag&&giusto?giusto-pag:null,tieni=String(r.consiglio).startsWith('ten');
+    $('#vOut').innerHTML=`<div class="tag"><p class="kick">Riconosciuto con sicurezza ${esc(r.sicurezza||'—')}${r.referenza?' · ref. '+esc(r.referenza):''}</p>
+      <h3 class="name serif">${esc(nome)}</h3>
+      <p class="kick">Valore di mercato oggi</p><div class="big">${eur(N(r.valore_min))} – ${eur(N(r.valore_max))}</div>
+      <p class="kick" style="margin-top:18px">A quanto metterlo in vendita</p>
+      <div class="cols" style="margin-top:6px"><div><small>Per vendere in fretta</small><b>${eur(N(r.prezzo_veloce))}</b></div><div class="on"><small>Prezzo giusto</small><b>${eur(giusto)}</b></div><div><small>Se puoi aspettare</small><b>${eur(N(r.prezzo_ambizioso))}</b></div></div>
+      ${scale(r,pag)}
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">${trend(r.tendenza)}${diff!=null?`<span class="pill ${diff>=0?'up':'down'}">${diff>=0?'Guadagno':'Perdita'} ${diff>=0?'+':''}${eur(diff)}</span>`:''}</div>
+      <div class="verdict"><span class="ico ${tieni?'up':'down'}">${tieni?'✓':'€'}</span><div><b>${tieni?'Consiglio: tienilo':'Consiglio: vendilo ora'}</b>${esc(r.motivo_consiglio)} ${esc(r.motivo_tendenza)}</div></div>
+      <p style="margin:12px 0 0">${esc(r.condizioni)} ${esc(r.dove_vendere)}</p>
+      ${(r.controlli?.length||r.foto_mancanti?.length)?`<details class="more"><summary>Cosa controllare</summary>${list(r.controlli)}${r.foto_mancanti?.length?'<b>Foto che aiuterebbero</b>'+list(r.foto_mancanti):''}</details>`:''}
+      <button type="button" class="btn" id="vSave" style="margin-top:14px">Salva nei miei orologi</button>
+      <button type="button" class="btn alt" id="vSearch" style="margin-top:10px">Cerca questo modello sui siti</button></div>`;
+    $('#vSearch').onclick=()=>{$('#cMarca').value=r.marca||'';$('#cModello').value=r.modello||'';$('#cRef').value=r.referenza||'';location.hash='cerca';renderLinks(q());$('#cOut').innerHTML=''};
+    $('#vSave').onclick=()=>{saveItem(null,{nome,ref:r.referenza||'',pagato:pag,stima:giusto,prezzo:giusto,stato:'casa',venduto:null,note:`${r.condizioni||''}`.trim(),thumb});toast('Salvato nei tuoi orologi');location.hash='collezione'};
+  }catch(e){$('#vOut').innerHTML=`<div class="err">${esc(errMsg(e))}</div>`}finally{btn.disabled=false}
 });
 
 /* --- COLLEZIONE --- */
-let items=[],editId=null;const LS='banco-orologi';
-const local=()=>{try{return JSON.parse(localStorage.getItem(LS)||'[]')}catch{return[]}};
-const saveLocal=()=>{try{localStorage.setItem(LS,JSON.stringify(items))}catch{}};
+const LS='banco-orologi';let items=[],editId=null,filt='tutti';
+try{items=JSON.parse(getLS(LS,'[]'))||[]}catch{items=[]}
+const saveLocal=()=>setLS(LS,JSON.stringify(items));
 const stati={casa:'In casa',vendita:'In vendita',venduto:'Venduto'};
 const render=()=>{
-  const att=items.filter(i=>i.stato!=='venduto'),vend=items.filter(i=>i.stato==='venduto');
-  const sum=(a,f)=>a.reduce((t,i)=>t+(f(i)||0),0);
-  $('#kStats').innerHTML=[['Orologi in casa o in vendita',String(att.length)],['Speso per questi',eur(sum(att,i=>i.pagato))],['Valore stimato',eur(sum(att,i=>i.stima))],['Guadagno sui venduti',eur(sum(vend,i=>(i.venduto||0)-(i.pagato||0)))]]
-    .map(([l,v])=>`<div><small>${esc(l)}</small><b>${esc(v)}</b></div>`).join('');
-  $('#kList').innerHTML=items.length?items.slice().sort((a,b)=>(b.creato||0)-(a.creato||0)).map(i=>{
+  const att=items.filter(i=>i.stato!=='venduto'),vend=items.filter(i=>i.stato==='venduto'),sum=(a,f)=>a.reduce((t,i)=>t+(f(i)||0),0);
+  const gain=sum(vend,i=>(i.venduto||0)-(i.pagato||0));
+  $('#kStats').innerHTML=`<div><small>Orologi in casa</small><b>${att.length}</b></div><div><small>Speso per questi</small><b>${eur(sum(att,i=>i.pagato))}</b></div><div><small>Valgono circa</small><b>${eur(sum(att,i=>i.stima))}</b></div><div class="hl"><small>Guadagnato sui venduti</small><b>${gain>=0?'+':''}${eur(gain)}</b></div>`;
+  const F=[['tutti','Tutti',items.length],['casa','In casa'],['vendita','In vendita'],['venduto','Venduti']].map(([k,l])=>[k,l,k==='tutti'?items.length:items.filter(i=>i.stato===k).length]);
+  $('#kFilter').innerHTML=F.map(([k,l,n])=>`<button type="button" class="chip" data-f="${k}" style="${k===filt?'background:var(--ink);color:var(--bg);border-color:var(--ink)':''}">${l} · ${n}</button>`).join('');
+  const shown=items.filter(i=>filt==='tutti'||i.stato===filt).sort((a,b)=>(b.creato||0)-(a.creato||0));
+  $('#kList').innerHTML=shown.length?shown.map(i=>{
     const g=i.stato==='venduto'&&i.venduto!=null&&i.pagato!=null?i.venduto-i.pagato:(i.stima!=null&&i.pagato!=null?i.stima-i.pagato:null);
-    return `<div class="item"><span>${i.thumb&&i.thumb.startsWith('data:image/')?`<img alt="" src="${esc(i.thumb)}">`:'<span class="ph" style="display:block"></span>'}</span>
-    <div><h3>${esc(i.nome)}</h3><p>${esc(stati[i.stato]||'')}${i.ref?' · ref. '+esc(i.ref):''} · pagato ${eur(i.pagato)}${i.stato==='venduto'?' · venduto '+eur(i.venduto):i.prezzo?' · chiedo '+eur(i.prezzo):''}</p></div>
-    <div class="r">${g!=null?`<span class="tag ${g>=0?'up':'down'}">${g>=0?'+':''}${eur(g)}</span> `:''}<button type="button" class="sec" data-ed="${esc(i.id)}">Modifica</button></div></div>`}).join('')
-    :'<div class="card">Nessun orologio ancora. Aggiungine uno a mano o salvalo dopo una valutazione da foto.</div>';
+    return `<button type="button" class="item" data-ed="${esc(i.id)}">${i.thumb&&String(i.thumb).startsWith('data:image/')?`<img alt="" src="${esc(i.thumb)}">`:`<span class="ph">${WATCH}</span>`}
+    <span><span class="st ${esc(i.stato)}">${esc(stati[i.stato]||'')}</span><h3>${esc(i.nome)}</h3><p>Pagato ${eur(i.pagato)}${i.stato==='venduto'?' · venduto '+eur(i.venduto):i.prezzo?' · chiedo '+eur(i.prezzo):''}</p></span>
+    <span class="r">${g!=null?`<b style="color:var(${g>=0?'--ok':'--ko'})">${g>=0?'+':''}${eur(g)}</b><span class="note">${i.stato==='venduto'?'guadagno':'stimato'}</span>`:''}</span></button>`}).join('')
+    :`<div class="empty">${WATCH}<p>${items.length?'Nessun orologio in questo gruppo.':'Qui troverai i tuoi orologi.<br>Aggiungine uno o salvalo dopo una valutazione.'}</p></div>`;
 };
-const ids=['Nome','Ref','Pagato','Stima','Prezzo','Stato','Venduto','Note'];
-const openForm=i=>{editId=i?.id||null;const f=$('#fItem');f.hidden=false;
-  $('#iNome').value=i?.nome||'';$('#iRef').value=i?.ref||'';$('#iPagato').value=i?.pagato??'';$('#iStima').value=i?.stima??'';$('#iPrezzo').value=i?.prezzo??'';
-  $('#iStato').value=i?.stato||'casa';$('#iVenduto').value=i?.venduto??'';$('#iNote').value=i?.note||'';$('#iDel').hidden=!i;f.scrollIntoView({behavior:'smooth',block:'start'});$('#iNome').focus()};
-const closeForm=()=>{$('#fItem').hidden=true;editId=null};
-async function saveItem(id,data){
-  const old=id?items.find(x=>x.id===id):null;
-  const body={...(old||{}),...data,creato:old?.creato||Date.now()};delete body.id;
-  try{
-    {const nid=id||('o'+Date.now());items=items.filter(x=>x.id!==nid).concat({...body,id:nid});saveLocal();render()}
-    $('#kMsg').textContent='Salvato.';
-  }catch(e){$('#kMsg').textContent=e?.code==='quota_exceeded'?'Spazio pieno: elimina qualche orologio venduto.':'Non sono riuscito a salvare. Riprova.'}
-}
+$('#kFilter').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(b){filt=b.dataset.f;render()}});
+const openForm=i=>{editId=i?.id||null;$('#fTitle').textContent=i?'Modifica orologio':'Aggiungi orologio';
+  $('#iNome').value=i?.nome||'';$('#iRef').value=i?.ref||'';$('#iPagato').value=i?.pagato??'';$('#iStima').value=i?.stima??'';$('#iPrezzo').value=i?.prezzo??'';$('#iVenduto').value=i?.venduto??'';$('#iNote').value=i?.note||'';
+  const s=document.querySelector(`input[name=istato][value="${i?.stato||'casa'}"]`);if(s)s.checked=true;
+  $('#iDel').hidden=!i;$('#sheet').hidden=false;document.body.style.overflow='hidden'};
+const closeForm=()=>{$('#sheet').hidden=true;document.body.style.overflow='';editId=null};
+function saveItem(id,data){const old=id?items.find(x=>x.id===id):null,nid=id||('o'+Date.now());
+  items=items.filter(x=>x.id!==nid).concat({...(old||{}),...data,id:nid,creato:old?.creato||Date.now()});saveLocal();render()}
 $('#kNew').addEventListener('click',()=>openForm(null));
 $('#iAnn').addEventListener('click',closeForm);
+$('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeForm()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeForm()});
 $('#kList').addEventListener('click',e=>{const b=e.target.closest('[data-ed]');if(b)openForm(items.find(x=>x.id===b.dataset.ed))});
-$('#fItem').addEventListener('submit',async e=>{e.preventDefault();
-  await saveItem(editId,{nome:$('#iNome').value.trim(),ref:$('#iRef').value.trim(),pagato:num($('#iPagato').value),stima:num($('#iStima').value),prezzo:num($('#iPrezzo').value),stato:$('#iStato').value,venduto:num($('#iVenduto').value),note:$('#iNote').value.trim()});closeForm()});
+$('#fItem').addEventListener('submit',e=>{e.preventDefault();
+  saveItem(editId,{nome:$('#iNome').value.trim(),ref:$('#iRef').value.trim(),pagato:num($('#iPagato').value),stima:num($('#iStima').value),prezzo:num($('#iPrezzo').value),stato:segVal('istato')||'casa',venduto:num($('#iVenduto').value),note:$('#iNote').value.trim()});closeForm();toast('Salvato')});
 let delArm=false;
-$('#iDel').addEventListener('click',async()=>{
-  if(!delArm){delArm=true;$('#iDel').textContent='Tocca di nuovo per eliminare';setTimeout(()=>{delArm=false;$('#iDel').textContent='Elimina'},4000);return}
-  delArm=false;$('#iDel').textContent='Elimina';const id=editId;closeForm();
-  items=items.filter(x=>x.id!==id);saveLocal();render();$('#kMsg').textContent='Eliminato.'
-});
+$('#iDel').addEventListener('click',()=>{
+  if(!delArm){delArm=true;$('#iDel').textContent='Tocca ancora';setTimeout(()=>{delArm=false;$('#iDel').textContent='Elimina'},4000);return}
+  delArm=false;$('#iDel').textContent='Elimina';items=items.filter(x=>x.id!==editId);saveLocal();render();closeForm();toast('Eliminato')});
+render();
 
-items=local();render();
 /* copia di sicurezza */
 $('#bOut').addEventListener('click',()=>{const b=new Blob([JSON.stringify({app:'banco-orologi',data:new Date().toISOString(),orologi:items})],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='orologi-'+new Date().toISOString().slice(0,10)+'.json';document.body.append(a);a.click();a.remove()});
 $('#bIn').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
   try{const j=JSON.parse(await f.text());const arr=Array.isArray(j)?j:j.orologi;if(!Array.isArray(arr))throw 0;
-    const byId=new Map(items.map(i=>[i.id,i]));arr.filter(x=>x&&x.id&&x.nome).forEach(x=>byId.set(String(x.id),{...x,id:String(x.id)}));
-    items=[...byId.values()];saveLocal();render();$('#kMsg').textContent='Copia ripristinata.'}
-  catch{$('#kMsg').textContent='Questo file non è una copia valida.'}e.target.value=''});
-/* impostazioni */
-$('#sKey').value=getLS('banco-key')?'••••••••'+getLS('banco-key').slice(-4):'';
-$('#sSave').addEventListener('click',()=>{const k=$('#sKey').value.trim();if(k.startsWith('••'))return;
-  setLS('banco-key',k);$('#sKey').value=k?'••••••••'+k.slice(-4):'';$('#sMsg').textContent=k?'Chiave salvata su questo telefono.':'Chiave tolta.'});
+    const m=new Map(items.map(i=>[i.id,i]));arr.filter(x=>x&&x.id&&x.nome).forEach(x=>m.set(String(x.id),{...x,id:String(x.id)}));
+    items=[...m.values()];saveLocal();render();toast('Copia ripristinata')}catch{toast('Questo file non è una copia valida')}e.target.value=''});
+
+/* chiave */
+const mask=k=>k?'••••••••'+k.slice(-4):'';$('#sKey').value=mask(getLS('banco-key'));
 $('#sKey').addEventListener('focus',()=>{if($('#sKey').value.startsWith('••'))$('#sKey').value=''});
-/* installazione sulla Home */
+$('#sSave').addEventListener('click',()=>{const k=$('#sKey').value.trim();if(k.startsWith('••'))return;setLS('banco-key',k);$('#sKey').value=mask(k);toast(k?'Chiave salvata':'Chiave tolta')});
+
+/* installazione */
 let pending=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();pending=e;$('#inst').hidden=false});
 $('#inst').addEventListener('click',async()=>{if(!pending)return;pending.prompt();await pending.userChoice.catch(()=>{});pending=null;$('#inst').hidden=true});
 addEventListener('appinstalled',()=>{$('#inst').hidden=true});
