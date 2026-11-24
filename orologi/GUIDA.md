@@ -7,7 +7,7 @@ Per la valutazione da foto serve solo una chiave Gemini gratuita.
 
 ## 1. Prendi la chiave Gemini (2 minuti, gratis)
 1. Vai su https://aistudio.google.com e accedi con un account Google.
-2. **Get API key** → **Create API key** → copia la chiave (inizia con `AIza`).
+2. **Get API key** → **Create API key** → copia la chiave.
 3. Non attivare la fatturazione: resta sul piano gratuito, senza costi.
 
 ## 2. Manda a papà il link di attivazione su WhatsApp
