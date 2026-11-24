@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Banco Orologi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#6b1e2a">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="config.js"></script>
+<style>
+/* VOICE: un banco da commerciante, calmo e preciso, pensato per un uso al telefono
+   IDEA: il registro del banco orologi: quadrante, cartellino del prezzo, libro dei conti
+   PICTURE: un quadrante in acciaio con lancette vere che segnano l'ora
+   COLOUR and TYPE: bordeaux cinturino, acciaio, blu quadrante soleil; DM Serif Display + Inter
+   LAYOUT: fascia bordeaux con quadrante, schede grandi, una colonna sul telefono */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#121214);--ink:light-dark(#161616,#ecebe8);--mut:light-dark(#5d6168,#a5a9b0);--line:light-dark(#e3e3e6,#2c2c31);--card:light-dark(#f6f6f7,#1b1b1f);--bord:light-dark(#6b1e2a,#4a1520);--steel:light-dark(#8a9099,#6d727a);--blue:light-dark(#2453b8,#7ea3ff);--ok:light-dark(#1f7a44,#6fd49a);--ko:light-dark(#a3261b,#ff8a7d)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2{font-family:"DM Serif Display",Georgia,serif;font-weight:400;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:clamp(32px,6vw,48px)}h2{font-size:28px;margin-bottom:6px}
+.band{padding:clamp(22px,4vw,48px) max(5vw,16px)}
+.wrap{max-width:1100px;margin:0 auto}
+header{background:var(--bord);color:#fff}
+header .wrap{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:20px;align-items:center}
+header p{margin:8px 0 0;color:#f1dfe2;max-width:46ch}
+.dial{width:150px;height:150px}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;padding:8px max(5vw,16px);overflow-x:auto}
+nav a{flex:none;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;font-weight:600;min-height:44px;display:flex;align-items:center}
+nav a[aria-current=page]{background:var(--ink);color:var(--bg)}
+section[hidden]{display:none}
+.lead{color:var(--mut);margin:0 0 18px;max-width:62ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+label{display:block;font-weight:600;font-size:14px;margin-bottom:4px}
+input,select,textarea{width:100%;font:inherit;font-size:16px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);min-height:46px}
+textarea{min-height:80px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+button{font:inherit;font-weight:600;border:0;border-radius:12px;padding:12px 20px;min-height:48px;cursor:pointer;background:var(--bord);color:#fff}
+button.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.55;cursor:wait}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px;margin-top:16px}
+.links a{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:14px;text-decoration:none;color:var(--ink);background:var(--bg)}
+.links a b{display:block;color:var(--blue)}.links a span{font-size:14px;color:var(--mut)}
+.out{margin-top:18px}.out:empty{display:none}
+.tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:600;background:var(--line)}
+.up{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}.down{background:color-mix(in srgb,var(--ko) 18%,transparent);color:var(--ko)}
+.price{font-family:"DM Serif Display",Georgia,serif;font-size:clamp(30px,6vw,44px);line-height:1;white-space:nowrap}
+.tickets{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;margin:14px 0}
+.ticket{border:1px dashed var(--steel);border-radius:12px;padding:12px 14px;background:var(--bg)}
+.ticket small{display:block;color:var(--mut);font-size:13px}
+.ticket .price{font-size:30px}
+ul{padding-left:20px;margin:6px 0}
+.drop{display:block;border:2px dashed var(--steel);border-radius:16px;padding:22px;text-align:center;cursor:pointer;background:var(--card)}
+.drop input{display:none}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.thumbs img{width:84px;height:84px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.note{font-size:13px;color:var(--mut)}
+.err{color:var(--ko);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px;margin-bottom:16px}
+.stats div{background:var(--card);border-radius:14px;padding:14px}.stats small{color:var(--mut);display:block;font-size:13px}
+.stats b{font-size:24px;white-space:nowrap}
+.item{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.item img,.item .ph{width:72px;height:72px;border-radius:12px;object-fit:cover;background:var(--card)}
+.item h3{margin:0;font-size:17px}.item p{margin:2px 0;font-size:14px;color:var(--mut)}
+.item .r{text-align:right;white-space:nowrap}
+.spin{display:inline-block;width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--bord);border-radius:50%;animation:s 1s linear infinite;vertical-align:-4px;margin-right:8px}
+@keyframes s{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spin{animation:none}}
+@media(max-width:600px){header .wrap{grid-template-columns:minmax(0,1fr) 96px}.dial{width:96px;height:96px}.item{grid-template-columns:56px minmax(0,1fr)}.item img,.item .ph{width:56px;height:56px}.item .r{grid-column:2;text-align:left}}
+</style></head><body>
+<header class="band"><div class="wrap">
+  <div><h1>Banco Orologi</h1><p>Cerca i prezzi di un modello, fai valutare un orologio da una foto e tieni il conto di quello che compri e vendi.</p>
+  <button type="button" id="inst" class="sec" hidden style="margin-top:14px">Metti l'app sulla schermata Home</button></div>
+  <svg class="dial" viewBox="0 0 200 200" aria-hidden="true">
+    <defs><radialGradient id="sb" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#4f7fe0"/><stop offset=".7" stop-color="#1d3f8f"/><stop offset="1" stop-color="#11285e"/></radialGradient>
+    <linearGradient id="st" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f5f7"/><stop offset=".5" stop-color="#9aa0a8"/><stop offset="1" stop-color="#e4e6ea"/></linearGradient></defs>
+    <circle cx="100" cy="104" r="94" fill="#000" opacity=".25"/>
+    <circle cx="100" cy="100" r="94" fill="url(#st)"/><circle cx="100" cy="100" r="80" fill="url(#sb)"/>
+    <g id="ticks"></g>
+    <g id="hh"><rect x="96" y="52" width="8" height="52" rx="3" fill="#f4f5f7"/></g>
+    <g id="mm"><rect x="97" y="30" width="6" height="74" rx="3" fill="#f4f5f7"/></g>
+    <g id="ss"><rect x="99" y="26" width="2" height="88" fill="#e0465a"/></g>
+    <circle cx="100" cy="100" r="6" fill="#f4f5f7"/>
+  </svg>
+</div></header>
+<nav><div class="wrap">
+  <a href="#cerca">Prezzi</a><a href="#valuta">Valuta</a><a href="#collezione">I miei orologi</a>
+</div></nav>
+
+<main>
+<section id="v-cerca" class="band"><div class="wrap">
+  <h2>Cerca i prezzi</h2>
+  <p class="lead">Scrivi marca e modello: si aprono le ricerche già pronte sui siti dove si comprano e vendono orologi, ordinate dal prezzo più basso dove il sito lo permette, più una stima del valore di mercato.</p>
+  <form id="fCerca" class="card">
+    <div class="grid">
+      <div><label for="cMarca">Marca</label><input id="cMarca" placeholder="es. Rolex, Omega, Seiko" required></div>
+      <div><label for="cModello">Modello</label><input id="cModello" placeholder="es. Submariner, Speedmaster"></div>
+      <div><label for="cRef">Referenza (se la sai)</label><input id="cRef" placeholder="es. 16610, 3570.50"></div>
+      <div><label for="cStato">Condizione</label><select id="cStato"><option>Usato</option><option>Nuovo</option><option>Vintage</option></select></div>
+      <div><label for="cCorredo">Corredo</label><select id="cCorredo"><option>Scatola e garanzia</option><option>Solo scatola</option><option>Solo orologio</option><option>Non so</option></select></div>
+    </div>
+    <div class="row"><button type="submit">Cerca</button><button type="button" class="sec" id="cStima">Chiedi la stima di mercato</button></div>
+  </form>
+  <div id="cLinks" class="out"></div>
+  <div id="cOut" class="out"></div>
+</div></section>
+
+<section id="v-valuta" class="band" hidden><div class="wrap">
+  <h2>Valuta da foto</h2>
+  <p class="lead">Carica 1–4 foto (quadrante, fondello, fibbia, eventuale garanzia). Ti dico che orologio sembra, quanto vale, a che prezzo metterlo in vendita e se conviene aspettare.</p>
+  <div class="card">
+    <label class="drop" for="vFoto"><b>Tocca per scegliere o scattare le foto</b><br><span class="note">Più foto nitide e con buona luce = valutazione migliore</span><input id="vFoto" type="file" accept="image/*" multiple></label>
+    <div class="thumbs" id="vThumbs"></div>
+    <div class="grid" style="margin-top:14px">
+      <div><label for="vPagato">Prezzo pagato (€, facoltativo)</label><input id="vPagato" inputmode="decimal" placeholder="es. 4500"></div>
+      <div><label for="vCorredo">Corredo</label><select id="vCorredo"><option>Non so</option><option>Scatola e garanzia</option><option>Solo scatola</option><option>Solo orologio</option></select></div>
+    </div>
+    <div style="margin-top:12px"><label for="vNote">Cosa sai dell'orologio (facoltativo)</label><textarea id="vNote" placeholder="es. anno 2008, revisionato nel 2022, piccolo graffio sulla lunetta"></textarea></div>
+    <div class="row"><button id="vGo" type="button">Valuta l'orologio</button><span class="note" id="vMsg"></span></div>
+  </div>
+  <div id="vOut" class="out"></div>
+</div></section>
+
+<section id="v-collezione" class="band" hidden><div class="wrap">
+  <h2>I miei orologi</h2>
+  <p class="lead">Quello che hai in casa, in vendita o già venduto, con quanto hai speso e guadagnato.</p>
+  <div class="stats" id="kStats"></div>
+  <div class="row" style="margin:0 0 10px"><button type="button" id="kNew">Aggiungi orologio</button><span class="note" id="kMsg"></span></div>
+  <form id="fItem" class="card" hidden>
+    <div class="grid">
+      <div><label for="iNome">Orologio</label><input id="iNome" required placeholder="es. Omega Seamaster 300M"></div>
+      <div><label for="iRef">Referenza</label><input id="iRef"></div>
+      <div><label for="iPagato">Pagato (€)</label><input id="iPagato" inputmode="decimal"></div>
+      <div><label for="iStima">Valore stimato (€)</label><input id="iStima" inputmode="decimal"></div>
+      <div><label for="iPrezzo">Prezzo di vendita richiesto (€)</label><input id="iPrezzo" inputmode="decimal"></div>
+      <div><label for="iStato">Stato</label><select id="iStato"><option value="casa">In casa</option><option value="vendita">In vendita</option><option value="venduto">Venduto</option></select></div>
+      <div><label for="iVenduto">Venduto a (€)</label><input id="iVenduto" inputmode="decimal"></div>
+    </div>
+    <div style="margin-top:12px"><label for="iNote">Note</label><textarea id="iNote"></textarea></div>
+    <div class="row"><button type="submit">Salva</button><button type="button" class="sec" id="iAnn">Annulla</button><button type="button" class="sec" id="iDel" hidden>Elimina</button></div>
+  </form>
+  <div id="kList"></div>
+  <div class="card" style="margin-top:20px">
+    <b>Copia di sicurezza</b>
+    <p class="note" style="margin:4px 0 0">Gli orologi sono salvati solo su questo telefono. Ogni tanto scarica una copia, così non perdi niente se cambi telefono.</p>
+    <div class="row"><button type="button" class="sec" id="bOut">Scarica copia</button><label class="sec" for="bIn" style="display:inline-flex;align-items:center;padding:12px 20px;min-height:48px;border-radius:12px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;font-size:16px;margin:0">Ripristina da copia</label><input type="file" id="bIn" accept="application/json,.json" hidden></div>
+  </div>
+  <details class="card" style="margin-top:12px"><summary style="cursor:pointer;font-weight:600;min-height:28px">Impostazioni valutazione</summary>
+    <p class="note">Da compilare solo se te lo chiede Lorenzo.</p>
+    <div class="grid"><div><label for="sUrl">Indirizzo servizio</label><input id="sUrl" placeholder="https://…workers.dev"></div><div><label for="sCod">Codice</label><input id="sCod"></div></div>
+    <div class="row"><button type="button" class="sec" id="sSave">Salva impostazioni</button><span class="note" id="sMsg"></span></div>
+  </details>
+</div></section>
+</main>
+<footer class="band note"><div class="wrap">Le stime sono fatte dall'intelligenza artificiale (Gemini di Google), sono indicative e non leggono gli annunci di oggi: controlla sempre i prezzi veri con i link della ricerca. L'autenticità si verifica solo dal vivo, da un orologiaio di fiducia.</div></footer>
+
+<script>
+{
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>{const n=parseFloat(String(v??'').replace(/\./g,'').replace(',','.'));return isFinite(n)?n:null};
+const eur=n=>n==null||!isFinite(n)?'—':new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
+const spin=t=>`<div class="card"><span class="spin"></span>${esc(t)}</div>`;
+
+/* quadrante */
+const ticks=$('#ticks');ticks.innerHTML=Array.from({length:12},(_,i)=>`<rect x="${i%3?98:96}" y="24" width="${i%3?4:8}" height="${i%3?10:16}" rx="1" fill="#f4f5f7" transform="rotate(${i*30} 100 100)"/>`).join('');
+const tick=()=>{const d=new Date(),s=d.getSeconds(),m=d.getMinutes()+s/60,h=d.getHours()%12+m/60;
+  $('#ss').setAttribute('transform',`rotate(${s*6} 100 100)`);$('#mm').setAttribute('transform',`rotate(${m*6} 100 100)`);$('#hh').setAttribute('transform',`rotate(${h*30} 100 100)`)};
+tick();setInterval(tick,matchMedia('(prefers-reduced-motion: reduce)').matches?30000:1000);
+
+/* viste */
+const views=['cerca','valuta','collezione'];
+const show=()=>{const v=views.includes(location.hash.slice(1))?location.hash.slice(1):'cerca';
+  views.forEach(n=>{$('#v-'+n).hidden=n!==v});
+  document.querySelectorAll('nav a').forEach(a=>{if(a.hash==='#'+v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')})};
+addEventListener('hashchange',()=>{show();scrollTo(0,0)});show();
+
+/* Claude */
+/* IA tramite il server Gemini */
+const getLS=(k,d='')=>{try{return localStorage.getItem(k)??d}catch{return d}};
+const setLS=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
+const cfg=()=>({url:getLS('banco-url')||window.BANCO_CONFIG?.servizio||'',cod:getLS('banco-cod')||window.BANCO_CONFIG?.codice||''});
+const toB64=b=>new Promise((ok,ko)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=ko;r.readAsDataURL(b)});
+async function ask(prompt,images=[]){
+  const {url,cod}=cfg();if(!url)throw{code:'no_config'};
+  const imgs=[];for(const b of images)imgs.push({mime:'image/jpeg',data:await toB64(b)});
+  let r;try{r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-Codice':cod},body:JSON.stringify({prompt,images:imgs})})}catch{throw{code:'offline'}}
+  if(r.status===429)throw{code:'rate_limited'};
+  const j=await r.json().catch(()=>({}));if(!r.ok||!j.risultato)throw{code:'server'};
+  return j.risultato}
+const sampler=async()=>({json:(p,o={})=>ask(p,o.images||[]),limits:async()=>({images:true})});
+const CTX='Contesto: il proprietario è un privato di Napoli che compra e rivende orologi usati, di solito nella fascia tra 200 e 10.000 euro (marche come Seiko, Tissot, Longines, Omega, Tudor, TAG Heuer, Hamilton, Oris, Breitling e simili; raramente alta orologeria).';
+const errMsg=e=>e?.code==='no_config'?'La stima non è ancora attiva: Lorenzo deve completare la configurazione.':e?.code==='offline'?'Non c\'è connessione a internet. Riprova quando sei connesso.':e?.code==='rate_limited'?'Troppe richieste per oggi o in pochi minuti: riprova più tardi.':'Non sono riuscito a fare la stima. Riprova tra poco.';
+
+/* --- CERCA --- */
+const q=()=>[$('#cMarca').value,$('#cModello').value,$('#cRef').value].map(s=>s.trim()).filter(Boolean).join(' ');
+const sites=s=>{const e=encodeURIComponent(s);return[
+  ['Chrono24','Il mercato più grande di orologi, annunci da tutta Europa',`https://www.chrono24.it/search/index.htm?query=${e}&sortorder=1`],
+  ['eBay – venduti','Prezzi a cui sono stati davvero venduti',`https://www.ebay.it/sch/i.html?_nkw=${e}&LH_Sold=1&LH_Complete=1`],
+  ['eBay – in vendita','Dal prezzo più basso',`https://www.ebay.it/sch/i.html?_nkw=${e}&_sop=15`],
+  ['Subito','Privati in Italia, spesso si tratta',`https://www.subito.it/annunci-italia/vendita/usato/?q=${e}&order=priceasc`],
+  ['Catawiki','Aste settimanali, utile per i vintage',`https://www.catawiki.com/it/s?q=${e}`],
+  ['Vinted','Occasioni tra privati',`https://www.vinted.it/catalog?search_text=${e}&order=price_low_to_high`],
+  ['Google Shopping','Negozi e rivenditori',`https://www.google.com/search?tbm=shop&q=${e}`]]};
+const renderLinks=()=>{const s=q();if(!s)return;
+  $('#cLinks').innerHTML=`<p class="note">Ricerche per “${esc(s)}”. Si aprono in una nuova finestra.</p><div class="links">${sites(s).map(([n,d,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener"><b>${esc(n)} →</b><span>${esc(d)}</span></a>`).join('')}</div>`};
+$('#fCerca').addEventListener('submit',e=>{e.preventDefault();renderLinks()});
+const trendTag=d=>{d=String(d||'').toLowerCase();return d.startsWith('sal')?'<span class="tag up">In salita</span>':d.startsWith('scend')?'<span class="tag down">In discesa</span>':'<span class="tag">Stabile</span>'};
+const list=a=>Array.isArray(a)&&a.length?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
+$('#cStima').addEventListener('click',async()=>{
+  const s=q();if(!s){$('#cMarca').focus();return}renderLinks();
+  const btn=$('#cStima');btn.disabled=true;$('#cOut').innerHTML=spin('Sto preparando la stima di mercato…');
+  try{const sm=await sampler();if(!sm)throw{code:'not_granted'};
+    const r=await sm.json(`Sei un commerciante esperto di orologi sul mercato italiano ed europeo (Chrono24, eBay venduti, Subito, Catawiki). ${CTX} Orologio: "${s}". Condizione: ${$('#cStato').value}. Corredo: ${$('#cCorredo').value}.
+Dai una stima realistica in euro dei prezzi a cui si compra e si vende oggi questo orologio. Se il modello è ambiguo, scegli la variante più comune e dillo. Non inventare referenze: se non sei sicuro, dillo.
+Rispondi SOLO con JSON: {"modello":"nome completo riconosciuto","listino_nuovo":numero o null,"mercato_min":numero,"mercato_max":numero,"prezzo_acquisto_buono":numero (sotto questo è un affare),"tendenza":"salita|stabile|discesa","motivo_tendenza":"una frase","varianti":["referenze o varianti che cambiano il prezzo"],"controlli":["cosa controllare prima di comprare"],"note":"2-3 frasi sul mercato di questo modello"}`);
+    $('#cOut').innerHTML=`<div class="card"><p class="note">Stima indicativa, non presa dagli annunci di oggi</p><h2>${esc(r.modello)}</h2>
+      <div class="tickets"><div class="ticket"><small>Prezzo di mercato usato</small><span class="price">${eur(r.mercato_min)} – ${eur(r.mercato_max)}</span></div>
+      <div class="ticket"><small>È un affare sotto</small><span class="price">${eur(r.prezzo_acquisto_buono)}</span></div>
+      <div class="ticket"><small>Listino nuovo</small><span class="price">${eur(r.listino_nuovo)}</span></div></div>
+      <p>${trendTag(r.tendenza)} ${esc(r.motivo_tendenza)}</p><p>${esc(r.note)}</p>
+      ${r.varianti?.length?'<b>Varianti che cambiano il prezzo</b>'+list(r.varianti):''}${r.controlli?.length?'<b>Prima di comprare controlla</b>'+list(r.controlli):''}</div>`;
+  }catch(e){$('#cOut').innerHTML=`<p class="err">${esc(errMsg(e))}</p>`}finally{btn.disabled=false}
+});
+
+/* --- VALUTA --- */
+let photos=[],thumb='',lastVal=null;
+const shrink=async(f,max)=>{const b=await createImageBitmap(f),k=Math.min(1,max/Math.max(b.width,b.height)),c=document.createElement('canvas');
+  c.width=Math.round(b.width*k);c.height=Math.round(b.height*k);c.getContext('2d').drawImage(b,0,0,c.width,c.height);return c};
+$('#vFoto').addEventListener('change',async e=>{
+  const fs=[...e.target.files].slice(0,4);photos=[];$('#vMsg').textContent='';
+  for(const f of fs){try{const c=await shrink(f,1400);photos.push(await new Promise(r=>c.toBlob(r,'image/jpeg',.85)))}catch{}}
+  if(fs[0]){try{thumb=(await shrink(fs[0],220)).toDataURL('image/jpeg',.75)}catch{thumb=''}}
+  $('#vThumbs').innerHTML=photos.map(p=>`<img alt="Foto caricata" src="${URL.createObjectURL(p)}">`).join('');
+});
+$('#vGo').addEventListener('click',async()=>{
+  if(!photos.length){$('#vMsg').textContent='Prima carica almeno una foto.';return}
+  const btn=$('#vGo');btn.disabled=true;$('#vOut').innerHTML=spin('Sto guardando le foto e valutando l\'orologio…');
+  try{const sm=await sampler();if(!sm)throw{code:'not_granted'};
+    const lim=await sm.limits?.().catch(()=>null);if(lim&&!lim.images)throw{code:'no_images'};
+    const pag=num($('#vPagato').value);
+    const r=await sm.json(`Sei un perito e commerciante esperto di orologi per il mercato italiano ed europeo dell'usato (Chrono24, eBay venduti, Subito, Catawiki). ${CTX} Guarda le foto allegate di un orologio.
+Corredo: ${$('#vCorredo').value}. ${pag?`Il proprietario l'ha pagato ${pag} euro.`:''} Note del proprietario: ${$('#vNote').value.trim()||'nessuna'}.
+1) Riconosci marca, modello e se possibile referenza; indica quanto sei sicuro. 2) Descrivi le condizioni visibili. 3) Stima il valore di mercato oggi in euro. 4) Proponi tre prezzi per metterlo in vendita: veloce (si vende in pochi giorni), giusto, ambizioso (per chi può aspettare). 5) Di' se il prezzo di questo modello tende a salire, restare stabile o scendere nei prossimi 1-2 anni e perché. 6) Consiglia se tenerlo o venderlo ora. Non dichiarare mai che è autentico: elenca i controlli da fare. Se le foto non bastano, dillo e chiedi quali foto servono.
+Rispondi SOLO con JSON: {"marca":"","modello":"","referenza":"o stringa vuota","sicurezza":"alta|media|bassa","condizioni":"1-2 frasi","valore_min":numero,"valore_max":numero,"prezzo_veloce":numero,"prezzo_giusto":numero,"prezzo_ambizioso":numero,"tendenza":"salita|stabile|discesa","motivo_tendenza":"1-2 frasi","consiglio":"tenere|vendere","motivo_consiglio":"1-2 frasi","dove_vendere":"dove conviene metterlo in vendita e perché, 1 frase","controlli":["controlli di autenticità e condizioni"],"foto_mancanti":["foto utili da aggiungere, se servono"]}`,{images:photos});
+    lastVal={...r,pagato:pag};
+    const nome=[r.marca,r.modello].filter(Boolean).join(' ');
+    const diff=pag&&r.prezzo_giusto?r.prezzo_giusto-pag:null;
+    $('#vOut').innerHTML=`<div class="card"><p class="note">Riconoscimento: sicurezza ${esc(r.sicurezza||'—')} · stima indicativa</p>
+      <h2>${esc(nome||'Orologio non riconosciuto')}${r.referenza?` <span class="note">ref. ${esc(r.referenza)}</span>`:''}</h2>
+      <p>${esc(r.condizioni)}</p>
+      <p><small class="note">Valore di mercato oggi</small><br><span class="price">${eur(r.valore_min)} – ${eur(r.valore_max)}</span></p>
+      <div class="tickets"><div class="ticket"><small>Per vendere in fretta</small><span class="price">${eur(r.prezzo_veloce)}</span></div>
+      <div class="ticket"><small>Prezzo giusto</small><span class="price">${eur(r.prezzo_giusto)}</span></div>
+      <div class="ticket"><small>Se puoi aspettare</small><span class="price">${eur(r.prezzo_ambizioso)}</span></div></div>
+      ${diff!=null?`<p><b>Rispetto a quanto pagato:</b> <span class="tag ${diff>=0?'up':'down'}">${diff>=0?'+':''}${eur(diff)}</span> al prezzo giusto</p>`:''}
+      <p>${trendTag(r.tendenza)} ${esc(r.motivo_tendenza)}</p>
+      <p><b>Consiglio: ${r.consiglio==='tenere'?'tenerlo':'venderlo ora'}.</b> ${esc(r.motivo_consiglio)}</p>
+      <p>${esc(r.dove_vendere)}</p>
+      ${r.controlli?.length?'<b>Da controllare</b>'+list(r.controlli):''}${r.foto_mancanti?.length?'<b>Foto che aiuterebbero</b>'+list(r.foto_mancanti):''}
+      <div class="row"><button type="button" id="vSave">Salva nei miei orologi</button><button type="button" class="sec" id="vSearch">Cerca i prezzi di questo modello</button></div></div>`;
+    $('#vSearch').onclick=()=>{$('#cMarca').value=r.marca||'';$('#cModello').value=r.modello||'';$('#cRef').value=r.referenza||'';location.hash='cerca';renderLinks()};
+    $('#vSave').onclick=async()=>{await saveItem(null,{nome,ref:r.referenza||'',pagato:pag,stima:r.prezzo_giusto??null,prezzo:r.prezzo_giusto??null,stato:'casa',venduto:null,note:`${r.condizioni||''} Tendenza: ${r.tendenza||''}.`.trim(),thumb});location.hash='collezione'};
+  }catch(e){$('#vOut').innerHTML=`<p class="err">${esc(e?.code==='no_images'?'Qui le foto non possono essere inviate a Claude.':errMsg(e))}</p>`}finally{btn.disabled=false}
+});
+
+/* --- COLLEZIONE --- */
+let items=[],editId=null;const LS='banco-orologi';
+const local=()=>{try{return JSON.parse(localStorage.getItem(LS)||'[]')}catch{return[]}};
+const saveLocal=()=>{try{localStorage.setItem(LS,JSON.stringify(items))}catch{}};
+const stati={casa:'In casa',vendita:'In vendita',venduto:'Venduto'};
+const render=()=>{
+  const att=items.filter(i=>i.stato!=='venduto'),vend=items.filter(i=>i.stato==='venduto');
+  const sum=(a,f)=>a.reduce((t,i)=>t+(f(i)||0),0);
+  $('#kStats').innerHTML=[['Orologi in casa o in vendita',String(att.length)],['Speso per questi',eur(sum(att,i=>i.pagato))],['Valore stimato',eur(sum(att,i=>i.stima))],['Guadagno sui venduti',eur(sum(vend,i=>(i.venduto||0)-(i.pagato||0)))]]
+    .map(([l,v])=>`<div><small>${esc(l)}</small><b>${esc(v)}</b></div>`).join('');
+  $('#kList').innerHTML=items.length?items.slice().sort((a,b)=>(b.creato||0)-(a.creato||0)).map(i=>{
+    const g=i.stato==='venduto'&&i.venduto!=null&&i.pagato!=null?i.venduto-i.pagato:(i.stima!=null&&i.pagato!=null?i.stima-i.pagato:null);
+    return `<div class="item"><span>${i.thumb&&i.thumb.startsWith('data:image/')?`<img alt="" src="${esc(i.thumb)}">`:'<span class="ph" style="display:block"></span>'}</span>
+    <div><h3>${esc(i.nome)}</h3><p>${esc(stati[i.stato]||'')}${i.ref?' · ref. '+esc(i.ref):''} · pagato ${eur(i.pagato)}${i.stato==='venduto'?' · venduto '+eur(i.venduto):i.prezzo?' · chiedo '+eur(i.prezzo):''}</p></div>
+    <div class="r">${g!=null?`<span class="tag ${g>=0?'up':'down'}">${g>=0?'+':''}${eur(g)}</span> `:''}<button type="button" class="sec" data-ed="${esc(i.id)}">Modifica</button></div></div>`}).join('')
+    :'<div class="card">Nessun orologio ancora. Aggiungine uno a mano o salvalo dopo una valutazione da foto.</div>';
+};
+const ids=['Nome','Ref','Pagato','Stima','Prezzo','Stato','Venduto','Note'];
+const openForm=i=>{editId=i?.id||null;const f=$('#fItem');f.hidden=false;
+  $('#iNome').value=i?.nome||'';$('#iRef').value=i?.ref||'';$('#iPagato').value=i?.pagato??'';$('#iStima').value=i?.stima??'';$('#iPrezzo').value=i?.prezzo??'';
+  $('#iStato').value=i?.stato||'casa';$('#iVenduto').value=i?.venduto??'';$('#iNote').value=i?.note||'';$('#iDel').hidden=!i;f.scrollIntoView({behavior:'smooth',block:'start'});$('#iNome').focus()};
+const closeForm=()=>{$('#fItem').hidden=true;editId=null};
+async function saveItem(id,data){
+  const old=id?items.find(x=>x.id===id):null;
+  const body={...(old||{}),...data,creato:old?.creato||Date.now()};delete body.id;
+  try{
+    {const nid=id||('o'+Date.now());items=items.filter(x=>x.id!==nid).concat({...body,id:nid});saveLocal();render()}
+    $('#kMsg').textContent='Salvato.';
+  }catch(e){$('#kMsg').textContent=e?.code==='quota_exceeded'?'Spazio pieno: elimina qualche orologio venduto.':'Non sono riuscito a salvare. Riprova.'}
+}
+$('#kNew').addEventListener('click',()=>openForm(null));
+$('#iAnn').addEventListener('click',closeForm);
+$('#kList').addEventListener('click',e=>{const b=e.target.closest('[data-ed]');if(b)openForm(items.find(x=>x.id===b.dataset.ed))});
+$('#fItem').addEventListener('submit',async e=>{e.preventDefault();
+  await saveItem(editId,{nome:$('#iNome').value.trim(),ref:$('#iRef').value.trim(),pagato:num($('#iPagato').value),stima:num($('#iStima').value),prezzo:num($('#iPrezzo').value),stato:$('#iStato').value,venduto:num($('#iVenduto').value),note:$('#iNote').value.trim()});closeForm()});
+let delArm=false;
+$('#iDel').addEventListener('click',async()=>{
+  if(!delArm){delArm=true;$('#iDel').textContent='Tocca di nuovo per eliminare';setTimeout(()=>{delArm=false;$('#iDel').textContent='Elimina'},4000);return}
+  delArm=false;$('#iDel').textContent='Elimina';const id=editId;closeForm();
+  items=items.filter(x=>x.id!==id);saveLocal();render();$('#kMsg').textContent='Eliminato.'
+});
+
+items=local();render();
+/* copia di sicurezza */
+$('#bOut').addEventListener('click',()=>{const b=new Blob([JSON.stringify({app:'banco-orologi',data:new Date().toISOString(),orologi:items})],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='orologi-'+new Date().toISOString().slice(0,10)+'.json';document.body.append(a);a.click();a.remove()});
+$('#bIn').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
+  try{const j=JSON.parse(await f.text());const arr=Array.isArray(j)?j:j.orologi;if(!Array.isArray(arr))throw 0;
+    const byId=new Map(items.map(i=>[i.id,i]));arr.filter(x=>x&&x.id&&x.nome).forEach(x=>byId.set(String(x.id),{...x,id:String(x.id)}));
+    items=[...byId.values()];saveLocal();render();$('#kMsg').textContent='Copia ripristinata.'}
+  catch{$('#kMsg').textContent='Questo file non è una copia valida.'}e.target.value=''});
+/* impostazioni */
+$('#sUrl').value=getLS('banco-url');$('#sCod').value=getLS('banco-cod');
+$('#sSave').addEventListener('click',()=>{const u=$('#sUrl').value.trim();
+  if(u&&!u.startsWith('https://')){$('#sMsg').textContent='L\'indirizzo deve iniziare con https://';return}
+  setLS('banco-url',u);setLS('banco-cod',$('#sCod').value.trim());$('#sMsg').textContent='Salvate.'});
+/* installazione sulla Home */
+let pending=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();pending=e;$('#inst').hidden=false});
+$('#inst').addEventListener('click',async()=>{if(!pending)return;pending.prompt();await pending.userChoice.catch(()=>{});pending=null;$('#inst').hidden=true});
+addEventListener('appinstalled',()=>{$('#inst').hidden=true});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body></html>
