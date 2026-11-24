@@ -154,7 +154,7 @@ ul{padding-left:20px;margin:6px 0}
   </div>
   <details class="card" style="margin-top:12px"><summary style="cursor:pointer;font-weight:600;min-height:28px">Impostazioni valutazione</summary>
     <p class="note">Da compilare solo se te lo chiede Lorenzo.</p>
-    <div class="grid"><div><label for="sUrl">Indirizzo servizio</label><input id="sUrl" placeholder="https://…workers.dev"></div><div><label for="sCod">Codice</label><input id="sCod"></div></div>
+    <div><label for="sKey">Chiave Gemini</label><input id="sKey" placeholder="AIza…" autocomplete="off" spellcheck="false"></div>
     <div class="row"><button type="button" class="sec" id="sSave">Salva impostazioni</button><span class="note" id="sMsg"></span></div>
   </details>
 </div></section>
@@ -186,18 +186,28 @@ addEventListener('hashchange',()=>{show();scrollTo(0,0)});show();
 /* IA tramite il server Gemini */
 const getLS=(k,d='')=>{try{return localStorage.getItem(k)??d}catch{return d}};
 const setLS=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
-const cfg=()=>({url:getLS('banco-url')||window.BANCO_CONFIG?.servizio||'',cod:getLS('banco-cod')||window.BANCO_CONFIG?.codice||''});
+const cfg=()=>({key:getLS('banco-key'),url:getLS('banco-url')||window.BANCO_CONFIG?.servizio||'',cod:getLS('banco-cod')||window.BANCO_CONFIG?.codice||''});
+/* link di attivazione: ...#k=CHIAVE salva la chiave sul telefono e la toglie dall'indirizzo */
+if(location.hash.startsWith('#k=')){setLS('banco-key',decodeURIComponent(location.hash.slice(3)).trim());history.replaceState(null,'',location.pathname+'#valuta');show()}
 const toB64=b=>new Promise((ok,ko)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=ko;r.readAsDataURL(b)});
 async function ask(prompt,images=[]){
-  const {url,cod}=cfg();if(!url)throw{code:'no_config'};
+  const {key,url,cod}=cfg();if(!key&&!url)throw{code:'no_config'};
   const imgs=[];for(const b of images)imgs.push({mime:'image/jpeg',data:await toB64(b)});
-  let r;try{r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-Codice':cod},body:JSON.stringify({prompt,images:imgs})})}catch{throw{code:'offline'}}
+  let r;
+  try{
+    if(key){r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},
+      body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt},...imgs.map(i=>({inline_data:{mime_type:i.mime,data:i.data}}))]}],generationConfig:{responseMimeType:'application/json',temperature:0.3}})})}
+    else r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-Codice':cod},body:JSON.stringify({prompt,images:imgs})});
+  }catch{throw{code:'offline'}}
   if(r.status===429)throw{code:'rate_limited'};
-  const j=await r.json().catch(()=>({}));if(!r.ok||!j.risultato)throw{code:'server'};
-  return j.risultato}
+  if(key&&(r.status===400||r.status===403))throw{code:'bad_key'};
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw{code:'server'};
+  if(!key){if(!j.risultato)throw{code:'server'};return j.risultato}
+  const t=(j.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('');
+  try{return JSON.parse(t)}catch{throw{code:'server'}}}
 const sampler=async()=>({json:(p,o={})=>ask(p,o.images||[]),limits:async()=>({images:true})});
 const CTX='Contesto: il proprietario è un privato di Napoli che compra e rivende orologi usati, di solito nella fascia tra 200 e 10.000 euro (marche come Seiko, Tissot, Longines, Omega, Tudor, TAG Heuer, Hamilton, Oris, Breitling e simili; raramente alta orologeria).';
-const errMsg=e=>e?.code==='no_config'?'La stima non è ancora attiva: Lorenzo deve completare la configurazione.':e?.code==='offline'?'Non c\'è connessione a internet. Riprova quando sei connesso.':e?.code==='rate_limited'?'Troppe richieste per oggi o in pochi minuti: riprova più tardi.':'Non sono riuscito a fare la stima. Riprova tra poco.';
+const errMsg=e=>e?.code==='no_config'?'La stima non è ancora attiva: serve la chiave Gemini (I miei orologi → Impostazioni valutazione).':e?.code==='bad_key'?'La chiave Gemini non funziona: controllala in I miei orologi → Impostazioni valutazione.':e?.code==='offline'?'Non c\'è connessione a internet. Riprova quando sei connesso.':e?.code==='rate_limited'?'Troppe richieste per oggi o in pochi minuti: riprova più tardi.':'Non sono riuscito a fare la stima. Riprova tra poco.';
 
 /* --- CERCA --- */
 const q=()=>[$('#cMarca').value,$('#cModello').value,$('#cRef').value].map(s=>s.trim()).filter(Boolean).join(' ');
@@ -323,10 +333,10 @@ $('#bIn').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)re
     items=[...byId.values()];saveLocal();render();$('#kMsg').textContent='Copia ripristinata.'}
   catch{$('#kMsg').textContent='Questo file non è una copia valida.'}e.target.value=''});
 /* impostazioni */
-$('#sUrl').value=getLS('banco-url');$('#sCod').value=getLS('banco-cod');
-$('#sSave').addEventListener('click',()=>{const u=$('#sUrl').value.trim();
-  if(u&&!u.startsWith('https://')){$('#sMsg').textContent='L\'indirizzo deve iniziare con https://';return}
-  setLS('banco-url',u);setLS('banco-cod',$('#sCod').value.trim());$('#sMsg').textContent='Salvate.'});
+$('#sKey').value=getLS('banco-key')?'••••••••'+getLS('banco-key').slice(-4):'';
+$('#sSave').addEventListener('click',()=>{const k=$('#sKey').value.trim();if(k.startsWith('••'))return;
+  setLS('banco-key',k);$('#sKey').value=k?'••••••••'+k.slice(-4):'';$('#sMsg').textContent=k?'Chiave salvata su questo telefono.':'Chiave tolta.'});
+$('#sKey').addEventListener('focus',()=>{if($('#sKey').value.startsWith('••'))$('#sKey').value=''});
 /* installazione sulla Home */
 let pending=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();pending=e;$('#inst').hidden=false});
 $('#inst').addEventListener('click',async()=>{if(!pending)return;pending.prompt();await pending.userChoice.catch(()=>{});pending=null;$('#inst').hidden=true});
