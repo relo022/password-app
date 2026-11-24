@@ -19,6 +19,7 @@
 :root{color-scheme:light dark;--bg:light-dark(#f3f2f0,#0f0f11);--sf:light-dark(#ffffff,#1a1a1e);--sf2:light-dark(#f7f6f4,#222227);--ink:light-dark(#18181a,#efeeeb);--mut:light-dark(#62656b,#a3a6ac);--line:light-dark(#e4e2de,#2d2d33);--bord:#6b1e2a;--bord2:light-dark(#6b1e2a,#e58a97);--blue:light-dark(#2453b8,#8fb0ff);--ok:light-dark(#1d7443,#71d69d);--ko:light-dark(#a3261b,#ff8f82);--sh:0 1px 2px rgb(0 0 0/.06),0 4px 16px rgb(0 0 0/.05)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:72px}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 h1,h2,h3{margin:0;font-weight:600;line-height:1.15;text-wrap:balance}
 .serif{font-family:"DM Serif Display",Georgia,serif;font-weight:400}
@@ -56,6 +57,14 @@ input:focus{border-color:var(--blue);outline:0}
 .cols div{background:var(--sf2);border-radius:14px;padding:10px 10px 12px;text-align:center}
 .cols small{display:block;font-size:12.5px;color:var(--mut);line-height:1.25;min-height:2.5em}
 .cols b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:clamp(20px,6vw,26px);white-space:nowrap}
+.range{position:relative;height:44px;margin:4px 6px 0}
+.range .trk{position:absolute;left:0;right:0;top:19px;height:6px;border-radius:9px;background:var(--line)}
+.range .fill{position:absolute;top:19px;height:6px;border-radius:9px;background:var(--bord2)}
+.range input{position:absolute;left:-6px;right:-6px;width:calc(100% + 12px);top:0;height:44px;margin:0;padding:0;border:0;background:none;-webkit-appearance:none;appearance:none;pointer-events:none;min-height:0}
+.range input::-webkit-slider-thumb{-webkit-appearance:none;pointer-events:auto;width:30px;height:30px;border-radius:50%;background:var(--sf);border:3px solid var(--bord2);box-shadow:0 1px 4px rgb(0 0 0/.25);cursor:pointer}
+.range input::-moz-range-thumb{pointer-events:auto;width:24px;height:24px;border-radius:50%;background:var(--sf);border:3px solid var(--bord2);cursor:pointer}
+.range input::-webkit-slider-runnable-track{background:none}
+.rv{display:flex;justify-content:space-between;align-items:baseline}.rv b{font-size:17px;white-space:nowrap}
 .cols .on{background:var(--bord);color:#fff}.cols .on small{color:#f3d9dd}
 .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:14px;font-weight:600;background:var(--sf2);white-space:nowrap}
 .up{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}.down{background:color-mix(in srgb,var(--ko) 16%,transparent);color:var(--ko)}
@@ -136,6 +145,10 @@ ul{padding-left:20px;margin:4px 0 10px}li{margin:3px 0}
     <div class="two fld"><div><label for="cModello">Modello</label><input id="cModello" placeholder="es. Seamaster"></div><div><label for="cRef">Referenza</label><input id="cRef" placeholder="se la sai"></div></div>
     <div class="fld"><span class="lab">Condizione</span><div class="seg" id="segStato"></div></div>
     <div class="fld"><span class="lab">Corredo</span><div class="seg" id="segCorredo"></div></div>
+    <div class="fld"><span class="lab">Per</span><div class="seg" id="segGenere"></div></div>
+    <div class="fld"><div class="rv"><span class="lab" id="lRange">Fascia di prezzo</span><b id="rTxt"></b></div>
+      <div class="range"><span class="trk"></span><span class="fill" id="rFill"></span>
+      <input type="range" id="rMin" min="0" max="100" value="0" aria-labelledby="lRange" aria-label="Prezzo minimo"><input type="range" id="rMax" min="0" max="100" value="100" aria-label="Prezzo massimo"></div></div>
     <button class="btn" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Cerca</button>
   </form>
   <div id="cOut"></div>
@@ -230,6 +243,18 @@ const seg=(el,name,opts,val)=>{$(el).innerHTML=opts.map(([v,l],i)=>`<input type=
 const segVal=n=>document.querySelector(`input[name=${n}]:checked`)?.value||'';
 seg('#segStato','stato',[['Usato','Usato'],['Nuovo','Nuovo'],['Vintage','Vintage']],'Usato');
 seg('#segCorredo','corredo',[['Scatola e garanzia','Scatola e garanzia'],['Solo orologio','Solo orologio'],['Non so','Non so']],'Scatola e garanzia');
+seg('#segGenere','genere',[['Qualsiasi','Qualsiasi'],['Uomo','Uomo'],['Donna','Donna']],'Qualsiasi');
+/* fascia di prezzo 200–10.000 su scala progressiva: più precisa nei prezzi bassi */
+const LO=200,HI=10000,nice=v=>v<1000?Math.round(v/50)*50:v<3000?Math.round(v/100)*100:Math.round(v/250)*250;
+const toEur=t=>t<=0?LO:t>=100?HI:nice(LO*Math.pow(HI/LO,t/100));
+const fmt=n=>new Intl.NumberFormat('it-IT',{useGrouping:'always'}).format(n);
+const range=()=>{const a=toEur(+$('#rMin').value),b=toEur(+$('#rMax').value);return{min:a,max:b,da:a>LO?a:null,a:b<HI?b:null}};
+const drawRange=e=>{let lo=+$('#rMin').value,hi=+$('#rMax').value;
+  if(lo>hi-4){if(e?.target?.id==='rMin'){lo=hi-4;$('#rMin').value=lo}else{hi=lo+4;$('#rMax').value=hi}}
+  $('#rFill').style.left=lo+'%';$('#rFill').style.width=(hi-lo)+'%';const r=range();
+  $('#rTxt').textContent=`${fmt(r.min)} – ${fmt(r.max)}${r.max>=HI?'+':''} €`;
+  $('#rMin').setAttribute('aria-valuetext',fmt(r.min)+' euro');$('#rMax').setAttribute('aria-valuetext',fmt(r.max)+' euro')};
+['rMin','rMax'].forEach(id=>$('#'+id).addEventListener('input',drawRange));drawRange();
 seg('#segItem','istato',[['casa','In casa'],['vendita','In vendita'],['venduto','Venduto']],'casa');
 const BR=['Seiko','Tissot','Longines','Omega','Tudor','TAG Heuer','Hamilton','Oris','Breitling','Citizen','Rolex','Panerai'];
 $('#brands').innerHTML=BR.map(b=>`<button type="button" class="chip" data-b="${esc(b)}">${esc(b)}</button>`).join('');
@@ -253,27 +278,32 @@ const list=a=>Array.isArray(a)&&a.length?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).j
 
 /* --- CERCA --- */
 const q=()=>[$('#cMarca').value,$('#cModello').value,$('#cRef').value].map(s=>s.trim()).filter(Boolean).join(' ');
-const SITES=[['Chrono24','Il mercato più grande, dal prezzo più basso','#1f3f6e',e=>`https://www.chrono24.it/search/index.htm?query=${e}&sortorder=1`],
-  ['eBay venduti','A quanto sono stati davvero venduti','#7a5a12',e=>`https://www.ebay.it/sch/i.html?_nkw=${e}&LH_Sold=1&LH_Complete=1`],
-  ['eBay in vendita','Annunci di oggi, dal più economico','#7a5a12',e=>`https://www.ebay.it/sch/i.html?_nkw=${e}&_sop=15`],
-  ['Subito','Privati in Italia, spesso si tratta','#a3261b',e=>`https://www.subito.it/annunci-italia/vendita/usato/?q=${e}&order=priceasc`],
-  ['Catawiki','Aste settimanali, buone per i vintage','#3d5a3a',e=>`https://www.catawiki.com/it/s?q=${e}`],
-  ['Vinted','Occasioni tra privati','#2f6e6e',e=>`https://www.vinted.it/catalog?search_text=${e}&order=price_low_to_high`],
-  ['Google Shopping','Negozi e rivenditori','#4a4f57',e=>`https://www.google.com/search?tbm=shop&q=${e}`]];
-const renderLinks=s=>{const e=encodeURIComponent(s);
-  $('#cLinks').innerHTML=`<div class="sites"><h3>Cerca “${esc(s)}” sui siti</h3>${SITES.map(([n,d,c,u])=>`<a class="site" href="${esc(u(e))}" target="_blank" rel="noopener"><span class="av" style="background:${c}">${esc(n.slice(0,2))}</span><span><b>${esc(n)}</b><span>${esc(d)}</span></span><span class="go">›</span></a>`).join('')}</div>`};
+const SITES=[['Chrono24','Il mercato più grande, dal prezzo più basso','#1f3f6e',(e,r)=>`https://www.chrono24.it/search/index.htm?query=${e}&sortorder=1${r.da?'&priceFrom='+r.da:''}${r.a?'&priceTo='+r.a:''}`],
+  ['eBay venduti','A quanto sono stati davvero venduti','#7a5a12',(e,r)=>`https://www.ebay.it/sch/i.html?_nkw=${e}&LH_Sold=1&LH_Complete=1${r.da?'&_udlo='+r.da:''}${r.a?'&_udhi='+r.a:''}`],
+  ['eBay in vendita','Annunci di oggi, dal più economico','#7a5a12',(e,r)=>`https://www.ebay.it/sch/i.html?_nkw=${e}&_sop=15${r.da?'&_udlo='+r.da:''}${r.a?'&_udhi='+r.a:''}`],
+  ['Subito','Privati in Italia, spesso si tratta','#a3261b',(e,r)=>`https://www.subito.it/annunci-italia/vendita/usato/?q=${e}&order=priceasc${r.da?'&ps='+r.da:''}${r.a?'&pe='+r.a:''}`],
+  ['Catawiki','Aste settimanali, buone per i vintage','#3d5a3a',(e,r)=>`https://www.catawiki.com/it/s?q=${e}`],
+  ['Vinted','Occasioni tra privati','#2f6e6e',(e,r)=>`https://www.vinted.it/catalog?search_text=${e}&order=price_low_to_high${r.da?'&price_from='+r.da:''}${r.a?'&price_to='+r.a:''}`],
+  ['Google Shopping','Negozi e rivenditori','#4a4f57',(e,r)=>`https://www.google.com/search?tbm=shop&q=${e}${r.da||r.a?`&tbs=mr:1,price:1${r.da?',ppr_min:'+r.da:''}${r.a?',ppr_max:'+r.a:''}`:''}`]];
+const renderLinks=s=>{const g=segVal('genere'),qs=g==='Uomo'?s+' uomo':g==='Donna'?s+' donna':s,e=encodeURIComponent(qs),r=range();
+  const extra=[g!=='Qualsiasi'?g.toLowerCase():'',r.da||r.a?`${fmt(r.min)}–${fmt(r.max)}${r.a?'':'+'} €`:''].filter(Boolean).join(' · ');
+  $('#cLinks').innerHTML=`<div class="sites"><h3>Cerca “${esc(s)}” sui siti</h3>${extra?`<p class="note" style="margin:0;padding:0 18px 6px">${esc(extra)}${r.da||r.a?' (su Catawiki la fascia va scelta sul sito)':''}</p>`:''}${SITES.map(([n,d,c,u])=>`<a class="site" href="${esc(u(e,r))}" target="_blank" rel="noopener"><span class="av" style="background:${c}">${esc(n.slice(0,2))}</span><span><b>${esc(n)}</b><span>${esc(d)}</span></span><span class="go">›</span></a>`).join('')}</div>`};
 let busyC=false;
+$('#cOut').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;const m=b.dataset.m,br=$('#cMarca').value.trim();
+  $('#cModello').value=m.toLowerCase().startsWith(br.toLowerCase())?m.slice(br.length).trim():m;$('#cRef').value='';$('#fCerca').requestSubmit()});
 $('#fCerca').addEventListener('submit',async ev=>{ev.preventDefault();const s=q();if(!s||busyC)return;
   document.activeElement?.blur();renderLinks(s);
   if(!getLS('banco-key')){$('#cOut').innerHTML='';$('#cOut').scrollIntoView({behavior:'smooth'});return}
   busyC=true;$('#cOut').innerHTML=wait('Preparo la stima…');$('#cOut').scrollIntoView({behavior:'smooth',block:'start'});
-  try{const r=await ask(`Sei un commerciante esperto di orologi sul mercato italiano ed europeo (Chrono24, eBay venduti, Subito, Catawiki). ${CTX} Orologio: "${s}". Condizione: ${segVal('stato')}. Corredo: ${segVal('corredo')}.
+  try{const r=await ask(`Sei un commerciante esperto di orologi sul mercato italiano ed europeo (Chrono24, eBay venduti, Subito, Catawiki). ${CTX} Orologio: "${s}". Condizione: ${segVal('stato')}. Corredo: ${segVal('corredo')}. Per: ${segVal('genere')}. Fascia di prezzo che cerca: ${fmt(range().min)}–${fmt(range().max)}${range().a?'':' e oltre'} euro.
+Indica anche 3-5 modelli di questa marca${segVal('genere')!=='Qualsiasi'?' da '+segVal('genere').toLowerCase():''} che sul mercato dell'usato si trovano dentro la fascia di prezzo indicata, con il prezzo tipico (se la marca non ne ha, lista vuota).
 Dai una stima realistica in euro dei prezzi a cui si compra e si vende oggi questo orologio. Se il modello è ambiguo, scegli la variante più comune e dillo. Non inventare referenze: se non sei sicuro, dillo.
-Rispondi SOLO con JSON: {"modello":"nome completo riconosciuto","listino_nuovo":numero o null,"mercato_min":numero,"mercato_max":numero,"prezzo_acquisto_buono":numero (sotto questo è un affare),"tendenza":"salita|stabile|discesa","motivo_tendenza":"una frase","varianti":["referenze o varianti che cambiano il prezzo"],"controlli":["cosa controllare prima di comprare"],"note":"2-3 frasi sul mercato di questo modello"}`);
+Rispondi SOLO con JSON: {"modello":"nome completo riconosciuto","listino_nuovo":numero o null,"mercato_min":numero,"mercato_max":numero,"prezzo_acquisto_buono":numero (sotto questo è un affare),"tendenza":"salita|stabile|discesa","motivo_tendenza":"una frase","varianti":["referenze o varianti che cambiano il prezzo"],"controlli":["cosa controllare prima di comprare"],"note":"2-3 frasi sul mercato di questo modello","modelli_in_fascia":[{"nome":"modello","prezzo":numero}]}`);
     $('#cOut').innerHTML=`<div class="tag"><p class="kick">Stima di mercato · usato, ${esc(segVal('corredo').toLowerCase())}</p><h3 class="name serif">${esc(r.modello||s)}</h3>
       <div class="big">${eur(N(r.mercato_min))} – ${eur(N(r.mercato_max))}</div>
       <div class="cols"><div class="on"><small>Affare se lo trovi sotto</small><b>${eur(N(r.prezzo_acquisto_buono))}</b></div><div><small>Listino nuovo</small><b>${eur(N(r.listino_nuovo))}</b></div><div><small>Andamento</small><b style="font:600 15px Inter,sans-serif">${trend(r.tendenza)}</b></div></div>
       <p style="margin:12px 0 0">${esc(r.note)} ${esc(r.motivo_tendenza)}</p>
+      ${Array.isArray(r.modelli_in_fascia)&&r.modelli_in_fascia.length?`<p class="kick" style="margin-top:14px">Modelli in questa fascia · tocca per cercarli</p><div class="chips" id="cSugg">${r.modelli_in_fascia.slice(0,6).map(m=>`<button type="button" class="chip" data-m="${esc(m?.nome)}">${esc(m?.nome)} · ${eur(N(m?.prezzo))}</button>`).join('')}</div>`:''}
       ${(r.varianti?.length||r.controlli?.length)?`<details class="more"><summary>Varianti e cosa controllare</summary>${r.varianti?.length?'<b>Varianti che cambiano il prezzo</b>'+list(r.varianti):''}${r.controlli?.length?'<b>Prima di comprare controlla</b>'+list(r.controlli):''}</details>`:''}</div>`;
   }catch(e){$('#cOut').innerHTML=`<div class="err">${esc(errMsg(e))}</div>`}finally{busyC=false}
 });
